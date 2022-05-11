@@ -1,0 +1,37 @@
+{% extends 'base.html.twig' %}
+
+{% block title %}Auditorium index{% endblock %}
+
+{% block body %}
+    <h1>Auditorium index</h1>
+
+    <table class="table">
+        <thead>
+            <tr>
+                <th>Number</th>
+                <th>CountSeats</th>
+                <th>Square</th>
+                <th>actions</th>
+            </tr>
+        </thead>
+        <tbody>
+        {% for auditorium in auditoria %}
+            <tr>
+                <td>{{ auditorium.Number }}</td>
+                <td>{{ auditorium.CountSeats }}</td>
+                <td>{{ auditorium.Square }}</td>
+                <td>
+                    <a href="{{ path('app_auditorium_show', {'id': auditorium.id}) }}">show</a>
+                    <a href="{{ path('app_auditorium_edit', {'id': auditorium.id}) }}">edit</a>
+                </td>
+            </tr>
+        {% else %}
+            <tr>
+                <td colspan="5">no records found</td>
+            </tr>
+        {% endfor %}
+        </tbody>
+    </table>
+
+    <a href="{{ path('app_auditorium_new') }}">Create new</a>
+{% endblock %}

@@ -1,0 +1,58 @@
+{% extends 'base.html.twig' %}
+
+{% block title %}Auditorium{% endblock %}
+
+{% block body %}
+    <h1>Auditorium</h1>
+
+    <table class="table">
+        <tbody>
+
+        <tr>
+            <th>CountSeats</th>
+            <td>{{ auditorium.CountSeats }}</td>
+        </tr>
+        <tr>
+            <th>Number</th>
+            <td>{{ auditorium.Number }}</td>
+        </tr>
+        <tr>
+            <th>Square</th>
+            <td>{{ auditorium.Square }}</td>
+        </tr>
+        </tbody>
+    </table>
+
+    <h1>Оснащенность</h1>
+    {% if techicalMeans %}
+        <h2>Технические средства:</h2>
+        <ol>
+            {% for techicalMean in techicalMeans %}
+                <li><a class="fs-5 lesson-link"
+                       href="{{ path('app_equipment_show', {'id': techicalMean.id}) }}">
+                        {{ techicalMean.Name }}
+                    </a></li>
+                {% for attribut in techicalMean.attributes %}
+                    <p>{{ attribut.Name }}: {{ attribut.Value }} {{attribut.UnitMeasurements}}</p>
+                {% endfor %}
+            {% endfor %}
+        </ol>
+    {% endif %}
+    <h2> ПО:</h2>
+    {% if softwares %}
+        <ol>
+            {% for software in softwares %}
+                <li><a class="fs-5 lesson-link"
+                       href="{{ path('app_equipment_show', {'id': software.id}) }}">{{ software.Name }}</a></li>
+            {% else %}
+                <h4> - </h4>
+            {% endfor %}
+        </ol>
+    {% endif %}
+    <a href="{{ path('app_equipment_new', {'auditorium': auditorium.id }) }}">Добавить оснащение</a>
+    <a href="{{ path('app_auditorium_index') }}">back to list</a>
+
+    <a href="{{ path('app_auditorium_edit', {'id': auditorium.id}) }}">edit</a>
+
+    {{ include('auditorium/_delete_form.html.twig') }}
+{% endblock %}
