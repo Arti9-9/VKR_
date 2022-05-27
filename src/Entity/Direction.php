@@ -35,6 +35,13 @@ class Direction
      */
     private $curriculum;
 
+    /**
+     * @ORM\Column(type="string", length=10)
+     */
+    private $nameGroup;
+
+
+
     public function __construct()
     {
         $this->curriculum = new ArrayCollection();
@@ -102,4 +109,17 @@ class Direction
     {
         return $this->Name;
     }
+
+    public function getNameGroup(): ?string
+    {
+        return $this->nameGroup;
+    }
+
+    public function setNameGroup(string $nameGroup): self
+    {
+        $this->nameGroup = $nameGroup;
+
+        return $this;
+    }
+
 }

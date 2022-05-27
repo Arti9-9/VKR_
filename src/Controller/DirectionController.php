@@ -110,11 +110,10 @@ class DirectionController extends AbstractController
     /**
      * @Route("/{id}/delete", name="app_direction_delete", methods={"POST"})
      */
-    public function delete(Request $request, Direction $direction, EntityManagerInterface $entityManager): Response
+    public function delete(Request $request, Direction $direction, DirectionRepository $directionRepository): Response
     {
         if ($this->isCsrfTokenValid('delete' . $direction->getId(), $request->request->get('_token'))) {
-            $entityManager->remove($direction);
-            $entityManager->flush();
+          $directionRepository->remove($direction);
         }
 
         return $this->redirectToRoute('app_direction_index', [], Response::HTTP_SEE_OTHER);

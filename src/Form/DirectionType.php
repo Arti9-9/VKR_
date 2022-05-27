@@ -16,7 +16,8 @@ class DirectionType extends AbstractType
     {
         $builder
             ->add('Name')
-            ->add('responsible');
+            ->add('responsible', )
+            ->add('nameGroup');
     }
 
     public function configureOptions(OptionsResolver $resolver): void

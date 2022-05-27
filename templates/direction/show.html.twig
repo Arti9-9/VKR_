@@ -15,7 +15,7 @@
         {% for curriculum in direction.curriculum %}
             <ol>
                 <li>
-                    <a href="{{ path('app_curriculum_show', {'id' : curriculum.id}) }}">curriculum.name</a>
+                    <a href="{{ path('app_curriculum_show', {'id' : curriculum.id}) }}">c{{ curriculum.name }}</a>
                 </li>
             </ol>
         {% else %}

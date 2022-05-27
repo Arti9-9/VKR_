@@ -3,6 +3,7 @@
 namespace App\Form;
 
 use App\Entity\Direction;
+use Symfony\Bridge\Doctrine\Form\Type\EntityType;
 use Symfony\Component\Form\AbstractType;
 use Symfony\Component\Form\Extension\Core\Type\HiddenType;
 use Symfony\Component\Form\FormBuilderInterface;
@@ -16,7 +17,8 @@ class DirectionUserType extends AbstractType
     {
         $builder
             ->add('Name')
-            ->add('responsible', HiddenType::class);
+            ->add('responsible')
+            ->add('nameGroup');
     }
 
     public function configureOptions(OptionsResolver $resolver): void
