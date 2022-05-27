@@ -1,0 +1,22 @@
+{% extends 'base.html.twig' %}
+
+{% block title %}Direction index{% endblock %}
+
+{% block body %}
+    {{ include('component/navbar.html.twig') }}
+    <h1>Direction index</h1>
+
+
+    {% for direction in directions %}
+        <ol>
+            <li>
+                <a class="text-black" href="{{ path('app_direction_show', {'id': direction.id}) }}">{{ direction.Name }}</a>
+                <a href="{{ path('app_direction_edit', {'id': direction.id}) }}">Изменить</a>
+            </li>
+        </ol>
+    {% else %}
+        <p colspan="3">Нет направлений</p>
+
+    {% endfor %}
+    <a href="{{ path('app_direction_new') }}">Создать направление</a>
+{% endblock %}

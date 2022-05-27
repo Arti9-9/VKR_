@@ -1,0 +1,18 @@
+{% extends 'base.html.twig' %}
+
+{% block title %}Hello UsersController!{% endblock %}
+
+{% block body %}
+    {{ include('component/navbar.html.twig') }}
+    <h2> Список пользователей: </h2>
+    <ol>
+        {% for user in users %}
+            <li><a class="fs-5 lesson-link"
+                   href="{{ path('app_user_show', {'id': user.id}) }}">{{ user.login }}</a></li>
+        {% else %}
+            <h4>Нет пользователей</h4>
+        {% endfor %}
+    </ol>
+    <a class="btn btn-outline-dark " href="{{ path('app_user_new') }}">Добавить
+        пользователя</a>
+{% endblock %}

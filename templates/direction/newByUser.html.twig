@@ -1,0 +1,15 @@
+{% extends 'base.html.twig' %}
+
+{% block title %}New Direction{% endblock %}
+
+{% block body %}
+    {{ include('component/navbar.html.twig') }}
+    <div class="container-fluid">
+        <h1>Новое направление</h1>
+        <p class="fs-5">Пользователь:
+            <a href="{{ path('app_user_show', {'id': direction.responsible.id}) }}">{{ direction.responsible.login }}</a>
+        </p>
+        {{ include('direction/_form.html.twig') }}
+    </div>
+
+{% endblock %}
