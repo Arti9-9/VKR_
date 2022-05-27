@@ -5,6 +5,7 @@ namespace App\Controller;
 use App\Entity\Equipment;
 use App\Entity\Auditorium;
 use App\Form\EquipmentType;
+use App\Repository\AuditoriumRepository;
 use App\Repository\EquipmentRepository;
 use App\Repository\AttributeRepository;
 use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
@@ -20,10 +21,10 @@ class EquipmentController extends AbstractController
     /**
      * @Route("/", name="app_equipment_index", methods={"GET"})
      */
-    public function index(EquipmentRepository $equipmentRepository): Response
+    public function index(AuditoriumRepository $auditoriumRepository): Response
     {
         return $this->render('equipment/index.html.twig', [
-            'equipment' => $equipmentRepository->findAll(),
+            'auditoriums' => $auditoriumRepository->findAll(),
         ]);
     }
 

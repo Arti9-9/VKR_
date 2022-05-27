@@ -3,6 +3,7 @@
 {% block title %}Auditorium index{% endblock %}
 
 {% block body %}
+    {{ include('component/navbar.html.twig') }}
     <h1>Auditorium index</h1>
 
     <table class="table">
@@ -34,4 +35,5 @@
     </table>
 
     <a href="{{ path('app_auditorium_new') }}">Create new</a>
+    {{ include('exel/index.html.twig') }}
 {% endblock %}

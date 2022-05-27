@@ -27,7 +27,7 @@ class DirectionRepository extends ServiceEntityRepository
      * @throws ORMException
      * @throws OptimisticLockException
      */
-    public function add(Direction $entity, bool $flush = false): void
+    public function add(Direction $entity, bool $flush = true): void
     {
         $this->_em->persist($entity);
         if ($flush) {
@@ -39,7 +39,7 @@ class DirectionRepository extends ServiceEntityRepository
      * @throws ORMException
      * @throws OptimisticLockException
      */
-    public function remove(Direction $entity, bool $flush = false): void
+    public function remove(Direction $entity, bool $flush = true): void
     {
         $this->_em->remove($entity);
         if ($flush) {
@@ -47,6 +47,14 @@ class DirectionRepository extends ServiceEntityRepository
         }
     }
 
+    public function findByUser($user)
+    {
+        return $this->createQueryBuilder('l')
+            ->andWhere('l.responsible = :user')
+            ->setParameter('user', $user)
+            ->getQuery()
+            ->getResult();
+    }
 //    /**
 //     * @return Direction[] Returns an array of Direction objects
 //     */

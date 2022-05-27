@@ -3,6 +3,7 @@
 {% block title %}Equipment{% endblock %}
 
 {% block body %}
+    {{ include('component/navbar.html.twig') }}
     <h1>{{ equipment.Name }}</h1>
 
     {% for attribute in attributes %}

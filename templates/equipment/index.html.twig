@@ -3,32 +3,24 @@
 {% block title %}Equipment index{% endblock %}
 
 {% block body %}
+    {{ include('component/navbar.html.twig') }}
     <h1>Equipment index</h1>
+    {% for auditorium in auditoriums %}
+        <h3>
+            <a href="{{ path('app_auditorium_show', {'id': auditorium.id}) }}">{{ auditorium.number }}:</a>
+        </h3>
+        <div class="container-fluid border border-dark">
+            {% for equipment in auditorium.Equipment %}
+                <ul>
+                    <li>
+                        <a href="{{ path('app_equipment_show', {'id': equipment.id}) }}">{{ equipment.name }}</a>
+                    </li>
+                </ul>
+            {% endfor %}
+        </div>
+    {% else %}
+        <p colspan="3">no records found</p>
 
-    <table class="table">
-        <thead>
-            <tr>
-                <th>Id</th>
-                <th>Name</th>
-                <th>actions</th>
-            </tr>
-        </thead>
-        <tbody>
-        {% for equipment in equipment %}
-            <tr>
-                <td>{{ equipment.id }}</td>
-                <td>{{ equipment.Name }}</td>
-                <td>
-                    <a href="{{ path('app_equipment_show', {'id': equipment.id}) }}">show</a>
-                    <a href="{{ path('app_equipment_edit', {'id': equipment.id}) }}">edit</a>
-                </td>
-            </tr>
-        {% else %}
-            <tr>
-                <td colspan="3">no records found</td>
-            </tr>
-        {% endfor %}
-        </tbody>
-    </table>
+    {% endfor %}
 
 {% endblock %}

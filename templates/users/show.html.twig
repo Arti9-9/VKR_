@@ -1,0 +1,24 @@
+{% extends 'base.html.twig' %}
+
+{% block title %}Attribute{% endblock %}
+
+{% block body %}
+    {{ include('component/navbar.html.twig') }}
+    <h2>Пользователь: {{ user.login }}</h2>
+    <h3>Список направлений данного пользователя:</h3>
+    <ol>
+        {% for direction in directions %}
+            <li><a class="fs-5 lesson-link"
+                   href="{{ path('app_user_show', {'id': user.id}) }}">{{ direction.name }}</a></li>
+        {% else %}
+            <h5 class="text-danger">Данный пользователь не отвечает ни за одно направление</h5>
+        {% endfor %}
+    </ol>
+
+    <a class="btn btn-outline-dark lesson-new" href="{{ path('app_direction_user_new', {'user': user.id}) }}">Добавить
+        направление</a>
+    <a href="{{ path('app_users') }}">Назад к списку</a>
+
+    <a href="{{ path('app_user_edit', {'id': user.id}) }}">Изменить</a>
+
+{% endblock %}

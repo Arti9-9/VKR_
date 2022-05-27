@@ -1,0 +1,12 @@
+{% extends 'base.html.twig' %}
+
+{% block title %}New Direction{% endblock %}
+
+{% block body %}
+    {{ include('component/navbar.html.twig') }}
+    <div class="container-fluid">
+        <h1>Новое направление</h1>
+        {{ include('direction/_form.html.twig') }}
+    </div>
+
+{% endblock %}

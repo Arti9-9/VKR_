@@ -30,10 +30,7 @@ class ExelController extends AbstractController
         $spreadsheet = IOFactory::load($fileFolder . $filePathName); // Here we are able to read from the excel file
         $spreadsheet->getActiveSheet()->removeColumn('A');
         $spreadsheet->getActiveSheet()->removeColumn('A');
-        for($i =1; $i<1022; $i++)
-        {
-            $spreadsheet->getActiveSheet()->removeColumn('B');
-        }
+
         for($i =1; $i<10; $i++)
         {
             $spreadsheet->getActiveSheet()->removeRow(1); // I added this to be able to remove the first  10 file line
@@ -43,5 +40,29 @@ class ExelController extends AbstractController
         return $this->render('exel/index.html.twig', [
             'controller_name' => 'ExelController',
         ]);
+    }
+    /**
+     * @Route("/testFile", name="testFile")
+     */
+    public function testFile()
+    {
+        return $this->render('exel/index.html.twig');
+    }
+    /**
+     * @Route("/handleUpload", name="handleUpload")
+     */
+    public function handleUpload(Request $request)
+    {
+        $file = $request->files->get('file');
+        $fileFolder =  __DIR__ . '/../../public/uploads/';
+        $filePathName = md5(uniqid('', true)) . $file->getClientOriginalName();
+        try {
+            $file->move($fileFolder, $filePathName);
+        } catch (FileException $e) {
+            dd($e);
+        }
+        $spreadsheet = IOFactory::load($fileFolder . $filePathName);
+        $sheetData = $spreadsheet->getActiveSheet()->toArray(null, true, true, true); // here, the read data is turned into an array
+        dd($sheetData);
     }
 }

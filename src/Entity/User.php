@@ -3,6 +3,8 @@
 namespace App\Entity;
 
 use App\Repository\UserRepository;
+use Doctrine\Common\Collections\ArrayCollection;
+use Doctrine\Common\Collections\Collection;
 use Doctrine\ORM\Mapping as ORM;
 use Symfony\Component\Security\Core\User\PasswordAuthenticatedUserInterface;
 use Symfony\Component\Security\Core\User\UserInterface;
@@ -26,7 +28,7 @@ class User implements UserInterface, PasswordAuthenticatedUserInterface
     private $login;
 
     /**
-     * @ORM\Column(type="json")
+     * @ORM\Column(type="json", options={"jsonb": true})
      */
     private $roles = [];
 
@@ -35,6 +37,16 @@ class User implements UserInterface, PasswordAuthenticatedUserInterface
      * @ORM\Column(type="string")
      */
     private $password;
+
+    /**
+     * @ORM\OneToMany(targetEntity=Direction::class, mappedBy="responsible")
+     */
+    private $direction;
+
+    public function __construct()
+    {
+        $this->direction = new ArrayCollection();
+    }
 
     public function getId(): ?int
     {
@@ -123,5 +135,39 @@ class User implements UserInterface, PasswordAuthenticatedUserInterface
     {
         // If you store any temporary, sensitive data on the user, clear it here
         // $this->plainPassword = null;
+    }
+
+    /**
+     * @return Collection<int, Direction>
+     */
+    public function getDirection(): Collection
+    {
+        return $this->direction;
+    }
+
+    public function addDirection(Direction $direction): self
+    {
+        if (!$this->direction->contains($direction)) {
+            $this->direction[] = $direction;
+            $direction->setResponsible($this);
+        }
+
+        return $this;
+    }
+
+    public function removeDirection(Direction $direction): self
+    {
+        if ($this->direction->removeElement($direction)) {
+            // set the owning side to null (unless already changed)
+            if ($direction->getResponsible() === $this) {
+                $direction->setResponsible(null);
+            }
+        }
+
+        return $this;
+    }
+    public function __toString()
+    {
+        return $this->login;
     }
 }

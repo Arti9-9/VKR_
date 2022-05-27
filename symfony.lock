@@ -637,6 +637,9 @@
     "symfony/yaml": {
         "version": "v5.4.3"
     },
+    "syslogic/doctrine-json-functions": {
+        "version": "5.0.0"
+    },
     "theseer/tokenizer": {
         "version": "1.2.1"
     },

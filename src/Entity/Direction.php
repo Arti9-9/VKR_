@@ -22,6 +22,12 @@ class Direction
      */
     private $Name;
 
+    /**
+     * @ORM\ManyToOne(targetEntity=User::class, inversedBy="direction")
+     * @ORM\JoinColumn(nullable=false)
+     */
+    private $responsible;
+
     public function getId(): ?int
     {
         return $this->id;
@@ -35,6 +41,18 @@ class Direction
     public function setName(string $Name): self
     {
         $this->Name = $Name;
+
+        return $this;
+    }
+
+    public function getResponsible(): ?User
+    {
+        return $this->responsible;
+    }
+
+    public function setResponsible(?User $responsible): self
+    {
+        $this->responsible = $responsible;
 
         return $this;
     }
