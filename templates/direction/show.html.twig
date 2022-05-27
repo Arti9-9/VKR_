@@ -4,26 +4,24 @@
 
 {% block body %}
     {{ include('component/navbar.html.twig') }}
-    <h1>Direction</h1>
+    <h1>{{ direction.name }}</h1>
 
-    <table class="table">
-        <tbody>
-        <tr>
-            <th>Id</th>
-            <td>{{ direction.id }}</td>
-        </tr>
-        <tr>
-            <th>Name</th>
-            <td>{{ direction.Name }}</td>
-        </tr>
-        </tbody>
-    </table>
     {% if is_granted('ROLE_ADMIN') %}
         <a href="{{ path('app_direction_index') }}">Назад</a>
-
         <a href="{{ path('app_direction_edit', {'id': direction.id}) }}">Редактировать</a>
         {{ include('direction/_delete_form.html.twig') }}
     {% else %}
+        <h3>Учебные планы:</h3>
+        {% for curriculum in direction.curriculum %}
+            <ol>
+                <li>
+                    <a href="{{ path('app_curriculum_show', {'id' : curriculum.id}) }}">curriculum.name</a>
+                </li>
+            </ol>
+        {% else %}
+            <h6 class="text-danger">Нет учебных планов</h6>
+            {% endfor %}
+        <a href="{{ path('app_curriculum_new') }}">Добавить учебный план</a>
         <a href="{{ path('app_direction_user_index', {'user' : app.user}) }}">Назад</a>
     {% endif %}
 

@@ -3,6 +3,8 @@
 namespace App\Entity;
 
 use App\Repository\DirectionRepository;
+use Doctrine\Common\Collections\ArrayCollection;
+use Doctrine\Common\Collections\Collection;
 use Doctrine\ORM\Mapping as ORM;
 
 /**
@@ -27,6 +29,16 @@ class Direction
      * @ORM\JoinColumn(nullable=false)
      */
     private $responsible;
+
+    /**
+     * @ORM\OneToMany(targetEntity=Curriculum::class, mappedBy="direction", orphanRemoval=true)
+     */
+    private $curriculum;
+
+    public function __construct()
+    {
+        $this->curriculum = new ArrayCollection();
+    }
 
     public function getId(): ?int
     {
@@ -55,5 +67,39 @@ class Direction
         $this->responsible = $responsible;
 
         return $this;
+    }
+
+    /**
+     * @return Collection<int, Curriculum>
+     */
+    public function getCurriculum(): Collection
+    {
+        return $this->curriculum;
+    }
+
+    public function addCurriculum(Curriculum $curriculum): self
+    {
+        if (!$this->curriculum->contains($curriculum)) {
+            $this->curriculum[] = $curriculum;
+            $curriculum->setDirection($this);
+        }
+
+        return $this;
+    }
+
+    public function removeCurriculum(Curriculum $curriculum): self
+    {
+        if ($this->curriculum->removeElement($curriculum)) {
+            // set the owning side to null (unless already changed)
+            if ($curriculum->getDirection() === $this) {
+                $curriculum->setDirection(null);
+            }
+        }
+
+        return $this;
+    }
+    public function __toString()
+    {
+        return $this->Name;
     }
 }

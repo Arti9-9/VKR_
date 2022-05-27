@@ -1,0 +1,11 @@
+{% extends 'base.html.twig' %}
+
+{% block title %}New Curriculum{% endblock %}
+
+{% block body %}
+    <h1>Create new Curriculum</h1>
+
+    {{ include('curriculum/_form.html.twig') }}
+
+    <a href="{{ path('app_curriculum_index') }}">back to list</a>
+{% endblock %}

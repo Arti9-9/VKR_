@@ -27,7 +27,7 @@ class CurriculumRepository extends ServiceEntityRepository
      * @throws ORMException
      * @throws OptimisticLockException
      */
-    public function add(Curriculum $entity, bool $flush = false): void
+    public function add(Curriculum $entity, bool $flush = true): void
     {
         $this->_em->persist($entity);
         if ($flush) {
@@ -39,7 +39,7 @@ class CurriculumRepository extends ServiceEntityRepository
      * @throws ORMException
      * @throws OptimisticLockException
      */
-    public function remove(Curriculum $entity, bool $flush = false): void
+    public function remove(Curriculum $entity, bool $flush = true): void
     {
         $this->_em->remove($entity);
         if ($flush) {

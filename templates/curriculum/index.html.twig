@@ -1,0 +1,37 @@
+{% extends 'base.html.twig' %}
+
+{% block title %}Curriculum index{% endblock %}
+
+{% block body %}
+    <h1>Curriculum index</h1>
+
+    <table class="table">
+        <thead>
+            <tr>
+                <th>Id</th>
+                <th>Name</th>
+                <th>EducationalProgram</th>
+                <th>actions</th>
+            </tr>
+        </thead>
+        <tbody>
+        {% for curriculum in curricula %}
+            <tr>
+                <td>{{ curriculum.id }}</td>
+                <td>{{ curriculum.Name }}</td>
+                <td>{{ curriculum.EducationalProgram }}</td>
+                <td>
+                    <a href="{{ path('app_curriculum_show', {'id': curriculum.id}) }}">show</a>
+                    <a href="{{ path('app_curriculum_edit', {'id': curriculum.id}) }}">edit</a>
+                </td>
+            </tr>
+        {% else %}
+            <tr>
+                <td colspan="4">no records found</td>
+            </tr>
+        {% endfor %}
+        </tbody>
+    </table>
+
+    <a href="{{ path('app_curriculum_new') }}">Create new</a>
+{% endblock %}

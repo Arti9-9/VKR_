@@ -1,0 +1,16 @@
+{% extends 'base.html.twig' %}
+
+{% block title %}Направление{% endblock %}
+
+{% block body %}
+    {{ include('component/navbar.html.twig') }}
+    <h1>Направлениие: {{ curriculum.name }}</h1>
+
+
+
+    <a href="{{ path('app_curriculum_index') }}">back to list</a>
+
+    <a href="{{ path('app_curriculum_edit', {'id': curriculum.id}) }}">edit</a>
+
+    {{ include('curriculum/_delete_form.html.twig') }}
+{% endblock %}

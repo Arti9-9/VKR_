@@ -1,0 +1,13 @@
+{% extends 'base.html.twig' %}
+
+{% block title %}Edit Curriculum{% endblock %}
+
+{% block body %}
+    <h1>Edit Curriculum</h1>
+
+    {{ include('curriculum/_form.html.twig', {'button_label': 'Update'}) }}
+
+    <a href="{{ path('app_curriculum_index') }}">back to list</a>
+
+    {{ include('curriculum/_delete_form.html.twig') }}
+{% endblock %}

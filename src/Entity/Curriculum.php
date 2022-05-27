@@ -27,6 +27,13 @@ class Curriculum
      */
     private $EducationalProgram;
 
+    /**
+     * @ORM\ManyToOne(targetEntity=Direction::class, inversedBy="curriculum")
+     * @ORM\JoinColumn(nullable=false)
+     */
+    private $direction;
+
+
     public function getId(): ?int
     {
         return $this->id;
@@ -52,6 +59,18 @@ class Curriculum
     public function setEducationalProgram(?string $EducationalProgram): self
     {
         $this->EducationalProgram = $EducationalProgram;
+
+        return $this;
+    }
+
+    public function getDirection(): ?Direction
+    {
+        return $this->direction;
+    }
+
+    public function setDirection(?Direction $direction): self
+    {
+        $this->direction = $direction;
 
         return $this;
     }
