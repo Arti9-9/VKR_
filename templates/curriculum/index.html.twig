@@ -3,7 +3,8 @@
 {% block title %}Curriculum index{% endblock %}
 
 {% block body %}
-    <h1>Curriculum index</h1>
+    {{ include('component/navbar.html.twig') }}
+    <h1>Учебный план</h1>
 
     <table class="table">
         <thead>
@@ -32,6 +33,4 @@
         {% endfor %}
         </tbody>
     </table>
-
-    <a href="{{ path('app_curriculum_new') }}">Create new</a>
 {% endblock %}

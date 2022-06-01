@@ -4,11 +4,15 @@
 
 {% block body %}
     {{ include('component/navbar.html.twig') }}
-    <h1>Направлениие: {{ curriculum.name }}</h1>
+    <h1>Направлениие: {{ curriculum.direction }}</h1>
+    <h1>{{ curriculum.name }}</h1>
     <h5>Дисциплины:</h5>
-    {% for %}
+    <ul>
+    {% for disciplin in curriculum.disciplines %}
+
+        <li><p>{{ disciplin.name }}</p></li>
     {% endfor %}
-    <a href="{{ path('') }}"
+    </ul>
     <a href="{{ path('app_curriculum_index') }}">back to list</a>
 
     <a href="{{ path('app_curriculum_edit', {'id': curriculum.id}) }}">edit</a>

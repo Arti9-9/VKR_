@@ -2,6 +2,11 @@
 
 namespace App\Controller;
 
+use App\Entity\Curriculum;
+use App\Entity\Discipline;
+use App\Repository\CurriculumRepository;
+use App\Repository\DirectionRepository;
+use App\Repository\DisciplineRepository;
 use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
 use Symfony\Component\HttpFoundation\Response;
 use Symfony\Component\HttpFoundation\Request;
@@ -15,32 +20,8 @@ class ExelController extends AbstractController
      * @param Request $request
      * @throws Exception
      */
-    public function index(Request  $request): Response
-    {
-        $file = $request->files->get('file'); // get the file from the sent request
-        $fileFolder =  'app/public/uploads/';  //choose the folder in which the uploaded file will be stored
-    dd($file);
-        $filePathName = md5(uniqid('', true)) . $file->getClientOriginalName();
-        //apply md5 function to generate an unique identifier for the file and concat it with the file extension
-        try {
-            $file->move($fileFolder, $filePathName);
-        } catch (FileException $e) {
-            dd($e);
-        }
-        $spreadsheet = IOFactory::load($fileFolder . $filePathName); // Here we are able to read from the excel file
-        $spreadsheet->getActiveSheet()->removeColumn('A');
-        $spreadsheet->getActiveSheet()->removeColumn('A');
 
-        for($i =1; $i<10; $i++)
-        {
-            $spreadsheet->getActiveSheet()->removeRow(1); // I added this to be able to remove the first  10 file line
-        }
-        $sheetData = $spreadsheet->getActiveSheet()->toArray(null, true, true, true); // here, the read data is turned into an array
-        dd($sheetData);
-        return $this->render('exel/index.html.twig', [
-            'controller_name' => 'ExelController',
-        ]);
-    }
+
     /**
      * @Route("/testFile", name="testFile")
      */
@@ -48,13 +29,20 @@ class ExelController extends AbstractController
     {
         return $this->render('exel/index.html.twig');
     }
+
     /**
      * @Route("/handleUpload", name="handleUpload")
      */
-    public function handleUpload(Request $request)
+    public function handleUpload(Request $request, DisciplineRepository $disciplineRepository, CurriculumRepository $curriculumRepository, DirectionRepository $directionRepository)
     {
+        $curriculum = new Curriculum();
+        $curriculum->setName($request->request->get('name'));
+        $curriculum->setDirection($directionRepository->findById($request->request->get('id'))[0]);
+        $curriculum->setDateCreate(new \DateTime());
+
         $file = $request->files->get('file');
-        $fileFolder =  __DIR__ . '/../../public/uploads/';
+        $fileFolder = __DIR__ . '/../../public/uploads/';
+
         $filePathName = md5(uniqid('', true)) . $file->getClientOriginalName();
         try {
             $file->move($fileFolder, $filePathName);
@@ -62,7 +50,51 @@ class ExelController extends AbstractController
             dd($e);
         }
         $spreadsheet = IOFactory::load($fileFolder . $filePathName);
+        for ($i = 0; $i < 9; $i++) {
+            $spreadsheet->getActiveSheet()->removeRow(1);
+        }
         $sheetData = $spreadsheet->getActiveSheet()->toArray(null, true, true, true); // here, the read data is turned into an array
-        dd($sheetData);
+        $disciplins = [];
+        foreach ($sheetData as $Row) {
+
+            if ($Row['C'] != null) {
+                $disciplins[] = $Row['C'];
+            }
+        }
+        $arrayToDelete = [
+            'Элективные дисциплины',
+            'Блок 2 Практика',
+            '_Учебная практика_',
+            '_Производственная практика_',
+            'Блок 3 Государственная итоговая аттестация',
+            'Элективные дисциплины по физической культуре и спорту (не включаются в объем программы)',
+            'Факультативные дисциплины (не включаются в объем программы)',
+            'Объем программы',
+            'Часть, формируемая участниками образовательных отношений',
+            'Обязательные дисциплины'
+        ];
+        $disciplins = array_unique($disciplins);
+        foreach ($arrayToDelete as $del) {
+            $key = array_search($del, $disciplins);
+            unset($disciplins[$key]);
+        }
+
+        $curriculumRepository->add($curriculum);
+        foreach ($disciplins as $disciplineName){
+            if($disciplineRepository->findByName($disciplineName)){
+                $discipline = $disciplineRepository->findByName($disciplineName)[0];
+                $discipline->addCurriculum($curriculum);
+                $disciplineRepository->add($discipline);
+            }
+            else{
+                $discipline = new Discipline();
+                $discipline->addCurriculum($curriculum);
+                $discipline->setName($disciplineName);
+                $disciplineRepository->add($discipline);
+            }
+        }
+        return $this->render('curriculum/index.html.twig',[
+            'curricula' => $curriculumRepository->findAll(),
+        ]);
     }
 }

@@ -38,6 +38,7 @@ class Attribute
      */
     private $equipment;
 
+
     public function getId(): ?int
     {
         return $this->id;
@@ -90,4 +91,5 @@ class Attribute
 
         return $this;
     }
+
 }

@@ -1,11 +1,10 @@
 {% extends 'base.html.twig' %}
 
-{% block title %}New Curriculum{% endblock %}
+{% block title %}Добавление учебного плана{% endblock %}
 
 {% block body %}
-    <h1>Create new Curriculum</h1>
-
-    {{ include('curriculum/_form.html.twig') }}
-
+    {{ include('component/navbar.html.twig') }}
+    <h1>Добавление нового учебного плана</h1>
+    {{ include('exel/curriculumIndex.html.twig') }}
     <a href="{{ path('app_curriculum_index') }}">back to list</a>
 {% endblock %}

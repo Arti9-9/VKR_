@@ -41,9 +41,9 @@ class UsersController extends AbstractController
     /**
      * @Route("/new", name="app_user_new", methods={"GET", "POST"})
      */
-    public function new(Request $request, UserRepository $userRepository, User $user): Response
+    public function new(Request $request, UserRepository $userRepository): Response
     {
-        dd($user);
+        $user = new User();
         $form = $this->createForm(UserType::class, $user);
         $form->handleRequest($request);
         $user->setRoles(['ROLE_ADMIN']);

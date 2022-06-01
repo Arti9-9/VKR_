@@ -12,16 +12,19 @@
         {{ include('direction/_delete_form.html.twig') }}
     {% else %}
         <h3>Учебные планы:</h3>
-        {% for curriculum in direction.curriculum %}
-            <ol>
+        <ol>
+            {% for curriculum in direction.curriculum %}
+
                 <li>
-                    <a href="{{ path('app_curriculum_show', {'id' : curriculum.id}) }}">c{{ curriculum.name }}</a>
+                    <a href="{{ path('app_curriculum_show', {'id' : curriculum.id}) }}">{{ curriculum.name }}</a>
+                    {{ curriculum.dateCreate|date('H:i:s Y-m-d') }}
                 </li>
-            </ol>
-        {% else %}
-            <h6 class="text-danger">Нет учебных планов</h6>
+
+            {% else %}
+                <h6 class="text-danger">Нет учебных планов</h6>
             {% endfor %}
-        <a href="{{ path('app_curriculum_new') }}">Добавить учебный план</a>
+        </ol>
+        <a href="{{ path('app_curriculum_new', {'direction' : direction.id}) }}">Добавить учебный план</a>
         <a href="{{ path('app_direction_user_index', {'user' : app.user}) }}">Назад</a>
     {% endif %}
 

@@ -55,6 +55,14 @@ class DirectionRepository extends ServiceEntityRepository
             ->getQuery()
             ->getResult();
     }
+    public function findById($id)
+    {
+        return $this->createQueryBuilder('l')
+            ->andWhere('l.id = :id')
+            ->setParameter('id', $id)
+            ->getQuery()
+            ->getResult();
+    }
 //    /**
 //     * @return Direction[] Returns an array of Direction objects
 //     */

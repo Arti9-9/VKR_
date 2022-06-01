@@ -3,6 +3,8 @@
 namespace App\Entity;
 
 use App\Repository\CurriculumRepository;
+use Doctrine\Common\Collections\ArrayCollection;
+use Doctrine\Common\Collections\Collection;
 use Doctrine\ORM\Mapping as ORM;
 
 /**
@@ -33,6 +35,28 @@ class Curriculum
      */
     private $direction;
 
+    /**
+     * @ORM\Column(type="datetime")
+     */
+    private $dateCreate;
+
+    /**
+     * @ORM\ManyToMany(targetEntity=Discipline::class, inversedBy="curricula")
+     */
+    private $disciplines;
+
+    public function __construct()
+    {
+        $this->disciplines = new ArrayCollection();
+    }
+
+
+
+
+    public function __toString()
+    {
+        return $this->Name;
+    }
 
     public function getId(): ?int
     {
@@ -74,4 +98,41 @@ class Curriculum
 
         return $this;
     }
+
+    public function getDateCreate(): ?\DateTimeInterface
+    {
+        return $this->dateCreate;
+    }
+
+    public function setDateCreate(\DateTimeInterface $dateCreate): self
+    {
+        $this->dateCreate = $dateCreate;
+
+        return $this;
+    }
+
+    /**
+     * @return Collection<int, Discipline>
+     */
+    public function getDisciplines(): Collection
+    {
+        return $this->disciplines;
+    }
+
+    public function addDiscipline(Discipline $discipline): self
+    {
+        if (!$this->disciplines->contains($discipline)) {
+            $this->disciplines[] = $discipline;
+        }
+
+        return $this;
+    }
+
+    public function removeDiscipline(Discipline $discipline): self
+    {
+        $this->disciplines->removeElement($discipline);
+
+        return $this;
+    }
+
 }

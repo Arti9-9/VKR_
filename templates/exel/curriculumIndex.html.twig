@@ -1,0 +1,9 @@
+<h3>Выберите файл для загрузки:</h3>
+<form method="POST" action="{{ path('handleUpload') }}" enctype="multipart/form-data">
+    <p>введите название учебного плана
+        <input class="input" type="text"  name="name">
+    </p>
+    <input hidden="true" name="id" value={{ curriculum.direction.id }}>
+    <input class="input"  type="file" name="file">
+    <button type="submit" class="button">Загрузить</button>
+</form>

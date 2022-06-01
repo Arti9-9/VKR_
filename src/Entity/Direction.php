@@ -47,6 +47,7 @@ class Direction
         $this->curriculum = new ArrayCollection();
     }
 
+
     public function getId(): ?int
     {
         return $this->id;

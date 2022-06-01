@@ -39,6 +39,7 @@ class Auditorium
      */
     private $Equipment;
 
+
     public function __construct()
     {
         $this->Equipment = new ArrayCollection();
@@ -114,4 +115,5 @@ class Auditorium
 
         return $this;
     }
+
 }

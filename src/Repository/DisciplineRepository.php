@@ -27,7 +27,7 @@ class DisciplineRepository extends ServiceEntityRepository
      * @throws ORMException
      * @throws OptimisticLockException
      */
-    public function add(Discipline $entity, bool $flush = false): void
+    public function add(Discipline $entity, bool $flush = true): void
     {
         $this->_em->persist($entity);
         if ($flush) {
@@ -39,7 +39,7 @@ class DisciplineRepository extends ServiceEntityRepository
      * @throws ORMException
      * @throws OptimisticLockException
      */
-    public function remove(Discipline $entity, bool $flush = false): void
+    public function remove(Discipline $entity, bool $flush = true): void
     {
         $this->_em->remove($entity);
         if ($flush) {
@@ -47,6 +47,14 @@ class DisciplineRepository extends ServiceEntityRepository
         }
     }
 
+    public function findByName($name)
+    {
+        return $this->createQueryBuilder('l')
+            ->andWhere('l.Name = :name')
+            ->setParameter('name', $name)
+            ->getQuery()
+            ->getResult();
+    }
 //    /**
 //     * @return Discipline[] Returns an array of Discipline objects
 //     */

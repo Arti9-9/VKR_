@@ -3,6 +3,7 @@
 namespace App\Controller;
 
 use App\Entity\Curriculum;
+use App\Entity\Direction;
 use App\Form\CurriculumType;
 use App\Repository\CurriculumRepository;
 use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
@@ -26,23 +27,15 @@ class CurriculumController extends AbstractController
     }
 
     /**
-     * @Route("/new", name="app_curriculum_new", methods={"GET", "POST"})
+     * @Route("/new/{direction}", name="app_curriculum_new", methods={"GET", "POST"})
      */
-    public function new(Request $request, CurriculumRepository $curriculumRepository): Response
+    public function new(Request $request, CurriculumRepository $curriculumRepository, Direction $direction): Response
     {
         $curriculum = new Curriculum();
-        $form = $this->createForm(CurriculumType::class, $curriculum);
-        $form->handleRequest($request);
+        $curriculum->setDirection($direction);
 
-        if ($form->isSubmitted() && $form->isValid()) {
-            $curriculumRepository->add($curriculum);
-
-            return $this->redirectToRoute('app_curriculum_index', [], Response::HTTP_SEE_OTHER);
-        }
-
-        return $this->renderForm('curriculum/new.html.twig', [
+        return $this->render('curriculum/new.html.twig', [
             'curriculum' => $curriculum,
-            'form' => $form,
         ]);
     }
 

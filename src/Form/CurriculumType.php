@@ -16,7 +16,6 @@ class CurriculumType extends AbstractType
         $builder
             ->add('Name')
             ->add('EducationalProgram')
-            ->add('direction')
         ;
     }
 
