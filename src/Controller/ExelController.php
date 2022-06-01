@@ -29,7 +29,20 @@ class ExelController extends AbstractController
     {
         return $this->render('exel/index.html.twig');
     }
-
+    /**
+     * @Route("/handleUploadShedule", name="handleUploadShedule")
+     */
+    public function handleUploadSchedule(Request $request, DisciplineRepository $disciplineRepository, CurriculumRepository $curriculumRepository, DirectionRepository $directionRepository)
+    {
+        $dbconn = pg_connect('dbname=mto');
+        // Это безопасно с тех пор как $_POST преобразуется автоматически
+        $res = pg_insert($dbconn, 'post_log', );
+        if ($res) {
+            echo "Данные из POST успешно внесены в журнал\n";
+        } else {
+            echo "Пользователь прислал неверные данные\n";
+        }
+    }
     /**
      * @Route("/handleUpload", name="handleUpload")
      */

@@ -29,11 +29,18 @@ class Discipline
      */
     private $curricula;
 
+    /**
+     * @ORM\OneToMany(targetEntity=Schedule::class, mappedBy="discipline", orphanRemoval=true)
+     */
+    private $schedules;
+
+
 
 
     public function __construct()
     {
         $this->curricula = new ArrayCollection();
+        $this->schedules = new ArrayCollection();
     }
 
 
@@ -77,6 +84,36 @@ class Discipline
     {
         if ($this->curricula->removeElement($curriculum)) {
             $curriculum->removeDiscipline($this);
+        }
+
+        return $this;
+    }
+
+    /**
+     * @return Collection<int, Schedule>
+     */
+    public function getSchedules(): Collection
+    {
+        return $this->schedules;
+    }
+
+    public function addSchedule(Schedule $schedule): self
+    {
+        if (!$this->schedules->contains($schedule)) {
+            $this->schedules[] = $schedule;
+            $schedule->setDiscipline($this);
+        }
+
+        return $this;
+    }
+
+    public function removeSchedule(Schedule $schedule): self
+    {
+        if ($this->schedules->removeElement($schedule)) {
+            // set the owning side to null (unless already changed)
+            if ($schedule->getDiscipline() === $this) {
+                $schedule->setDiscipline(null);
+            }
         }
 
         return $this;

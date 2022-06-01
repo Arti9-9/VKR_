@@ -39,10 +39,16 @@ class Auditorium
      */
     private $Equipment;
 
+    /**
+     * @ORM\OneToMany(targetEntity=Schedule::class, mappedBy="auditorium", orphanRemoval=true)
+     */
+    private $schedules;
+
 
     public function __construct()
     {
         $this->Equipment = new ArrayCollection();
+        $this->schedules = new ArrayCollection();
     }
 
     public function getId(): ?int
@@ -110,6 +116,36 @@ class Auditorium
             // set the owning side to null (unless already changed)
             if ($equipment->getAuditorium() === $this) {
                 $equipment->setAuditorium(null);
+            }
+        }
+
+        return $this;
+    }
+
+    /**
+     * @return Collection<int, Schedule>
+     */
+    public function getSchedules(): Collection
+    {
+        return $this->schedules;
+    }
+
+    public function addSchedule(Schedule $schedule): self
+    {
+        if (!$this->schedules->contains($schedule)) {
+            $this->schedules[] = $schedule;
+            $schedule->setAuditorium($this);
+        }
+
+        return $this;
+    }
+
+    public function removeSchedule(Schedule $schedule): self
+    {
+        if ($this->schedules->removeElement($schedule)) {
+            // set the owning side to null (unless already changed)
+            if ($schedule->getAuditorium() === $this) {
+                $schedule->setAuditorium(null);
             }
         }
 

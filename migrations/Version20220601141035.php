@@ -1,0 +1,40 @@
+<?php
+
+declare(strict_types=1);
+
+namespace DoctrineMigrations;
+
+use Doctrine\DBAL\Schema\Schema;
+use Doctrine\Migrations\AbstractMigration;
+
+/**
+ * Auto-generated Migration: Please modify to your needs!
+ */
+final class Version20220601141035 extends AbstractMigration
+{
+    public function getDescription(): string
+    {
+        return '';
+    }
+
+    public function up(Schema $schema): void
+    {
+        // this up() migration is auto-generated, please modify it to your needs
+        $this->addSql('CREATE SEQUENCE schedule_id_seq INCREMENT BY 1 MINVALUE 1 START 1');
+        $this->addSql('CREATE TABLE schedule (id INT NOT NULL, group_name VARCHAR(10) NOT NULL, PRIMARY KEY(id))');
+        $this->addSql('DROP TABLE auditorium_discipline');
+    }
+
+    public function down(Schema $schema): void
+    {
+        // this down() migration is auto-generated, please modify it to your needs
+        $this->addSql('CREATE SCHEMA public');
+        $this->addSql('DROP SEQUENCE schedule_id_seq CASCADE');
+        $this->addSql('CREATE TABLE auditorium_discipline (auditorium_id INT NOT NULL, discipline_id INT NOT NULL, squad VARCHAR(10) NOT NULL, PRIMARY KEY(auditorium_id, discipline_id))');
+        $this->addSql('CREATE INDEX idx_8481f7f73cf19aa0 ON auditorium_discipline (auditorium_id)');
+        $this->addSql('CREATE INDEX idx_8481f7f7a5522701 ON auditorium_discipline (discipline_id)');
+        $this->addSql('ALTER TABLE auditorium_discipline ADD CONSTRAINT fk_8481f7f73cf19aa0 FOREIGN KEY (auditorium_id) REFERENCES auditorium (id) ON DELETE CASCADE NOT DEFERRABLE INITIALLY IMMEDIATE');
+        $this->addSql('ALTER TABLE auditorium_discipline ADD CONSTRAINT fk_8481f7f7a5522701 FOREIGN KEY (discipline_id) REFERENCES discipline (id) ON DELETE CASCADE NOT DEFERRABLE INITIALLY IMMEDIATE');
+        $this->addSql('DROP TABLE schedule');
+    }
+}
