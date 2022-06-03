@@ -46,7 +46,14 @@ class AuditoriumRepository extends ServiceEntityRepository
             $this->_em->flush();
         }
     }
-
+    public function findByNumber($number)
+    {
+        return $this->createQueryBuilder('l')
+            ->andWhere('l.Number = :number')
+            ->setParameter('number', $number)
+            ->getQuery()
+            ->getResult();
+    }
 //    /**
 //     * @return AuditoriumFixture[] Returns an array of AuditoriumFixture objects
 //     */

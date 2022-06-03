@@ -50,6 +50,10 @@ class Auditorium
         $this->Equipment = new ArrayCollection();
         $this->schedules = new ArrayCollection();
     }
+    public function __toString()
+    {
+        return $this->Number;
+    }
 
     public function getId(): ?int
     {

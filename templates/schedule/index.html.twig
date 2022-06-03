@@ -1,0 +1,18 @@
+{% extends 'base.html.twig' %}
+
+{% block title %}Загрузка расписания{% endblock %}
+
+{% block body %}
+    {{ include('component/navbar.html.twig') }}
+
+
+
+    {% for name in groupsName %}
+        <h2>{{ name }}:</h2>
+        {% for rowSchedule in schedule[name] %}
+
+            <p> {{ rowSchedule.discipline }} {{ rowSchedule.auditorium }}</p>
+        {% endfor %}
+    {% endfor %}
+
+{% endblock %}

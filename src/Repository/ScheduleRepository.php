@@ -27,7 +27,7 @@ class ScheduleRepository extends ServiceEntityRepository
      * @throws ORMException
      * @throws OptimisticLockException
      */
-    public function add(Schedule $entity, bool $flush = false): void
+    public function add(Schedule $entity, bool $flush = true): void
     {
         $this->_em->persist($entity);
         if ($flush) {
@@ -39,7 +39,7 @@ class ScheduleRepository extends ServiceEntityRepository
      * @throws ORMException
      * @throws OptimisticLockException
      */
-    public function remove(Schedule $entity, bool $flush = false): void
+    public function remove(Schedule $entity, bool $flush = true): void
     {
         $this->_em->remove($entity);
         if ($flush) {
@@ -47,6 +47,36 @@ class ScheduleRepository extends ServiceEntityRepository
         }
     }
 
+    //нужно для того чтобы не записывать повторяющееся записи в БД
+    public function findByAuditoriumDisciplineGroup($auditorium, $discipline, $group)
+    {
+        return $this->createQueryBuilder('l')
+            ->andWhere('l.auditorium = :auditorium')
+            ->andWhere('l.discipline = :discipline')
+            ->andWhere('l.groupName = :group')
+            ->setParameter('auditorium', $auditorium)
+            ->setParameter('discipline', $discipline)
+            ->setParameter('group', $group)
+            ->getQuery()
+            ->getResult();
+    }
+
+    public function findOrderBy()
+    {
+        return $this->createQueryBuilder('l')
+            ->orderBy('l.groupName', 'ASC')
+            ->getQuery()
+            ->getResult();
+    }
+    public function findByGroup($group)
+    {
+        return $this->createQueryBuilder('l')
+            ->andWhere('l.groupName LIKE :group')
+            ->setParameter('group' ,$group . "%")
+            ->orderBy('l.groupName', 'ASC')
+            ->getQuery()
+            ->getResult();
+    }
 //    /**
 //     * @return Schedule[] Returns an array of Schedule objects
 //     */

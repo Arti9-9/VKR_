@@ -7,7 +7,7 @@
     <h2> Список пользователей: </h2>
     <ol>
         {% for user in users %}
-            <li><a class="fs-5 lesson-link"
+            <li><a class="fs-5 "
                    href="{{ path('app_user_show', {'id': user.id}) }}">{{ user.login }}</a></li>
         {% else %}
             <h4>Нет пользователей</h4>

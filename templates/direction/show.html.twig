@@ -25,7 +25,7 @@
             {% endfor %}
         </ol>
         <a href="{{ path('app_curriculum_new', {'direction' : direction.id}) }}">Добавить учебный план</a>
-        <a href="{{ path('app_direction_user_index', {'user' : app.user}) }}">Назад</a>
+        <a href="{{ path('app_directionUser_index', {'user' : app.user}) }}">Назад</a>
     {% endif %}
 
 {% endblock %}

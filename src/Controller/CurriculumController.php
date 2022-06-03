@@ -72,11 +72,10 @@ class CurriculumController extends AbstractController
     /**
      * @Route("/{id}", name="app_curriculum_delete", methods={"POST"})
      */
-    public function delete(Request $request, Curriculum $curriculum, EntityManagerInterface $entityManager): Response
+    public function delete(Request $request, Curriculum $curriculum,  CurriculumRepository $curriculumRepository): Response
     {
         if ($this->isCsrfTokenValid('delete'.$curriculum->getId(), $request->request->get('_token'))) {
-            $entityManager->remove($curriculum);
-            $entityManager->flush();
+            $curriculumRepository->remove($curriculum);
         }
 
         return $this->redirectToRoute('app_curriculum_index', [], Response::HTTP_SEE_OTHER);

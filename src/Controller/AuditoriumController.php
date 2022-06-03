@@ -90,4 +90,13 @@ class AuditoriumController extends AbstractController
         }
         return $this->redirectToRoute('app_auditorium_index', [], Response::HTTP_SEE_OTHER);
     }
+    /**
+     * @Route("/file_selection/upload", name="app_upload_auditorium", methods={"GET"})
+     */
+    public function AuditoriumUpload(): Response
+    {
+
+        return $this->render('auditorium/upload.html.twig', [
+        ]);
+    }
 }

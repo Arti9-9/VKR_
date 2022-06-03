@@ -1,0 +1,9 @@
+{% extends 'base.html.twig' %}
+
+{% block title %}Загрузка аудиторий{% endblock %}
+
+{% block body %}
+    {{ include('component/navbar.html.twig') }}
+    <h1>Загрузить аудитории:</h1>
+    {{ include('exel/indexAuditorium.html.twig') }}
+{% endblock %}

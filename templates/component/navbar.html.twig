@@ -4,10 +4,14 @@
             <img src="" width="50 " height="50" class="d-inline-block align-top" alt="">
             <p class="my-auto ">MTO</p>
         </a>
-        <a class="btn  btn-outline-primary text mx-3" href="{{ path('app_auditorium_index') }}"
+        <a class="btn  btn-outline-primary text mx-3" href="{{ path('app_schedule') }}"
            role="button">Загрузить расписание</a>
+        <a class="btn  btn-outline-primary text mx-3" href="{{ path('app_upload_auditorium') }}"
+           role="button">Загрузить аудитории</a>
         <a class="btn  btn-outline-primary text mx-3" href="{{ path('app_auditorium_index') }}"
            role="button">Аудитории</a>
+        <a class="btn  btn-outline-primary text mx-3" href="{{ path('app_schedule_index') }}"
+           role="button">Расписание</a>
         <a class="btn  btn-outline-primary text mx-3" href="{{ path('app_equipment_index') }}"
            role="button">Оснащенность</a>
         <a class="btn  btn-outline-primary text mx-3" href="{{ path('app_direction_index') }}"
@@ -22,9 +26,12 @@
             <img src="" width="50 " height="50" class="d-inline-block align-top" alt="">
             <p class="my-auto ">MTO</p>
         </a>
+
+        <a class="btn  btn-outline-primary text mx-3" href="{{ path('app_schedule_index') }}"
+           role="button">Расписание</a>
         <a class="btn  btn-outline-primary text mx-3" href="{{ path('app_curriculum_index') }}"
            role="button">Учебные планы</a>
-        <a class="btn  btn-outline-primary text mx-3" href="{{ path('app_direction_user_index', {'user' : app.user}) }}"
+        <a class="btn  btn-outline-primary text mx-3" href="{{ path('app_directionUser_index') }}"
            role="button">Направления</a>
         <a class='btn btn-outline-primary text mx-3' href="{{ path('app_logout') }} ">Выход</a>
     </nav>

@@ -22,7 +22,7 @@ class UsersController extends AbstractController
     public function index(UserRepository $userRepository): Response
     {
         return $this->render('users/index.html.twig', [
-            'users' => $userRepository->findByUsers('user'),//исправить!!!!!!!
+            'users' => $userRepository->findAll(),//исправить!!!!!!!
         ]);
     }
     /**
@@ -39,18 +39,18 @@ class UsersController extends AbstractController
 
 
     /**
-     * @Route("/new", name="app_user_new", methods={"GET", "POST"})
+     * @Route("/new/user", name="app_user_new", methods={"GET", "POST"})
      */
     public function new(Request $request, UserRepository $userRepository): Response
     {
         $user = new User();
         $form = $this->createForm(UserType::class, $user);
         $form->handleRequest($request);
-        $user->setRoles(['ROLE_ADMIN']);
 
         if ($form->isSubmitted() && $form->isValid()) {
+            $user->setRoles([]);
             $userRepository->add($user);
-            return $this->redirectToRoute('app_home_user', [], Response::HTTP_SEE_OTHER);
+            return $this->redirectToRoute('app_users', [], Response::HTTP_SEE_OTHER);
         }
 
         return $this->renderForm('users/new.html.twig', [

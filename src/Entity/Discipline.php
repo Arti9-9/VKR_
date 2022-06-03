@@ -43,7 +43,10 @@ class Discipline
         $this->schedules = new ArrayCollection();
     }
 
-
+    public function __toString()
+    {
+        return $this->Name;
+    }
 
     public function getId(): ?int
     {

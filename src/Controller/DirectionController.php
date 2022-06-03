@@ -26,16 +26,18 @@ class DirectionController extends AbstractController
             'directions' => $directionRepository->findAll(),
         ]);
     }
-    /**
-     * @Route("/{user}", name="app_direction_user_index", methods={"GET"})
-     */
-    public function indexUser(DirectionRepository $directionRepository): Response
-    {
 
-        return $this->render('direction/indexUser.html.twig', [
-            'directions' => $directionRepository->findByUser($this->getUser()),
+    /**
+     * @Route("/", name="app_directionUser_index", methods={"GET"})
+     */
+    public function indexByUser(DirectionRepository $directionRepository): Response
+    {
+        $user = $this->getUser();
+        return $this->render('direction/index.html.twig', [
+            'directions' => $directionRepository->findByUser($user),
         ]);
     }
+
     /**
      * @Route("/new/{user}", name="app_direction_user_new", methods={"GET", "POST"})
      */
