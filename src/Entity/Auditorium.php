@@ -40,7 +40,7 @@ class Auditorium
     private $Equipment;
 
     /**
-     * @ORM\OneToMany(targetEntity=Schedule::class, mappedBy="auditorium", orphanRemoval=true)
+     * @ORM\OneToMany(targetEntity=Schedule::class, mappedBy="auditorium",cascade={"persist"}, orphanRemoval=true)
      */
     private $schedules;
 

@@ -4,15 +4,20 @@
 
 {% block body %}
     {{ include('component/navbar.html.twig') }}
-    <h1>Направления:</h1>
 
-
+    {% if is_granted('ROLE_ADMIN') %}
+        <h1>Направления:</h1>
+    {% else %}
+        <h1>Направления за которые вы отвечаете:</h1>
+    {% endif %}
     {% for direction in directions %}
         <ol>
             <li>
                 <a class="text-black"
                    href="{{ path('app_direction_show', {'id': direction.id}) }}">{{ direction.Name }}</a>
-                <a href="{{ path('app_direction_edit', {'id': direction.id}) }}">Изменить</a>
+                {% if is_granted('ROLE_ADMIN') %}
+                    <a href="{{ path('app_direction_edit', {'id': direction.id}) }}">Изменить</a>
+                {% endif %}
             </li>
         </ol>
     {% else %}

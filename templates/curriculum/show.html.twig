@@ -5,12 +5,12 @@
 {% block body %}
     {{ include('component/navbar.html.twig') }}
     <h1>Направлениие: {{ curriculum.direction }}</h1>
-    <h1>{{ curriculum.name }}</h1>
+    <h1>Учебный план: {{ curriculum.name }}</h1>
     <h5>Дисциплины:</h5>
     <ul>
-    {% for disciplin in curriculum.disciplines %}
+    {% for discipline in curriculum.disciplines %}
 
-        <li><p>{{ disciplin.name }}</p></li>
+        <li><a href="{{ path('app_disciplin_show', {'id' :discipline.id}) }}">{{ discipline.name }}</a></li>
     {% endfor %}
     </ul>
     <a href="{{ path('app_curriculum_index') }}">back to list</a>

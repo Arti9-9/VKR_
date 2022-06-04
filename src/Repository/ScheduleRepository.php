@@ -72,7 +72,7 @@ class ScheduleRepository extends ServiceEntityRepository
     {
         return $this->createQueryBuilder('l')
             ->andWhere('l.groupName LIKE :group')
-            ->setParameter('group' ,$group . "%")
+            ->setParameter('group' ,$group . "-%")
             ->orderBy('l.groupName', 'ASC')
             ->getQuery()
             ->getResult();

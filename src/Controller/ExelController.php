@@ -10,6 +10,7 @@ use App\Repository\AuditoriumRepository;
 use App\Repository\CurriculumRepository;
 use App\Repository\DirectionRepository;
 use App\Repository\DisciplineRepository;
+use App\Repository\EquipmentRepository;
 use App\Repository\ScheduleRepository;
 use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
 use Symfony\Component\HttpFoundation\Response;
@@ -37,7 +38,7 @@ class ExelController extends AbstractController
     /**
      * @Route("/handleUploadAuditorium", name="handle_upload_auditorium")
      */
-    public function handleUploadAuditorium(Request $request, DisciplineRepository $disciplineRepository, AuditoriumRepository $auditoriumRepository)
+    public function handleUploadAuditorium(Request $request, EquipmentRepository $equipmentRepository, AuditoriumRepository $auditoriumRepository)
     {
         $file = $request->files->get('file');
         $spreadsheet = IOFactory::load($file);
@@ -51,8 +52,22 @@ class ExelController extends AbstractController
             $auditorium->setSquare($row['C']);
             //проверка на то существует ли уже эта аудитория
             if ($auditoriumRepository->findByNumber($row['A'])) {
-                $auditoriumRepository->remove($auditoriumRepository->findByNumber($row['A']));
+                $equipments = $equipmentRepository->findByAuditorium($auditoriumRepository->findByNumber($row['A'])[0]);
+                //проверяем есть ли у этой аудитории оснащенность
+                if ($equipments) {
+                    //почему то не работает каскадное удалениие и приходится так
+                    foreach ($equipments as $equipment) {
+                        $equipmentRepository->remove($equipment);
+                    }
+                }
+                $auditoriumRepository->remove($auditoriumRepository->findByNumber($row['A'])[0]);
+                //возвращаем оборудование оттносящиеся к аудитории
+                foreach ($equipments as $equipment) {
+                    $equipment->setAuditorium($auditorium);
+                }
             }
+
+
             $auditoriumRepository->add($auditorium);
         }
 
@@ -71,15 +86,11 @@ class ExelController extends AbstractController
         $spreadsheet->getActiveSheet()->removeRow(1);
         $sheetData = $spreadsheet->getActiveSheet()->toArray(null, true, true, true); // here, the read data is turned into an array
         foreach ($sheetData as $row) {
-            //временно
-            if ($row[] = null){
-                break;
-            }
             $schedule = new Schedule();
             $discipline = $disciplineRepository->findByName($row['A']);
             $auditorium = $auditoriumRepository->findByNumber($row['B']);
             //если в БД есть такая аудитория и дисциплина
-            if ($auditorium and $discipline) {
+
                 //проверка нет ли уже такой записи в БД
                 if (!$scheduleRepository->findByAuditoriumDisciplineGroup($auditorium[0], $discipline[0], $row['C'])) {
                     $schedule->setAuditorium($auditorium[0]);
@@ -88,11 +99,20 @@ class ExelController extends AbstractController
                     $scheduleRepository->add($schedule);
                 }
 
-            }
         }
 
+        $schedule = $scheduleRepository->findOrderBy();
+        //создаем массив имен
+        $groupsName = array();
+        foreach ($schedule as $row) {
+            $scheduleGroups[$row->getGroupName()][] = $row;
+            $groupsName[] = $row->getGroupName();
+        }
+        $groupsName = array_unique($groupsName);
+
         return $this->render('schedule/index.html.twig', [
-            'schedule' => $scheduleRepository->findOrderBy(),
+            'schedule' => $scheduleGroups,
+            'groupsName' => $groupsName,
         ]);
     }
 

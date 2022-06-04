@@ -1,0 +1,9 @@
+{% extends 'base.html.twig' %}
+
+{% block title %}Загрузка расписания{% endblock %}
+
+{% block body %}
+    {{ include('component/navbar.html.twig') }}
+    <h1>Загрузить расписание:</h1>
+    {{ include('exel/indexSchedule.html.twig') }}
+{% endblock %}

@@ -47,7 +47,16 @@ class EquipmentRepository extends ServiceEntityRepository
         }
     }
 
-    public function findByAuditorium($auditorium, $category)
+    public function findByAuditorium($auditorium)
+    {
+        return $this->createQueryBuilder('l')
+            ->andWhere('l.auditorium = :auditorium')
+            ->setParameter('auditorium', $auditorium)
+            ->getQuery()
+            ->getResult();
+    }
+
+    public function findByAuditoriumCategory($auditorium, $category)
     {
         return $this->createQueryBuilder('l')
             ->andWhere('l.auditorium = :auditorium')

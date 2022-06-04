@@ -1,0 +1,12 @@
+{% extends 'base.html.twig' %}
+
+{% block title %}Дисциплина{% endblock %}
+
+{% block body %}
+    {{ include('component/navbar.html.twig') }}
+    <h1>{{ discipline.name }}</h1>
+    <h3>Аудитории где проводятся данная дисциплина по вашим направлениям:</h3>
+    <ul>
+    </ul>
+
+{% endblock %}

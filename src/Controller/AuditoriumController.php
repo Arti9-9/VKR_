@@ -51,8 +51,8 @@ class AuditoriumController extends AbstractController
      */
     public function show(Auditorium $auditorium, EquipmentRepository $equipmentRepository): Response
     {
-        $technicalMeans = $equipmentRepository->findByAuditorium($auditorium, 'Технические средства');
-        $softwares = $equipmentRepository->findByAuditorium($auditorium, 'ПО');
+        $technicalMeans = $equipmentRepository->findByAuditoriumCategory($auditorium, 'Технические средства');
+        $softwares = $equipmentRepository->findByAuditoriumCategory($auditorium, 'ПО');
         return $this->render('auditorium/show.html.twig', [
             'auditorium' => $auditorium,
             'techicalMeans' => $technicalMeans,
