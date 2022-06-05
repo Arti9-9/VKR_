@@ -47,6 +47,14 @@ class CurriculumRepository extends ServiceEntityRepository
         }
     }
 
+    public function findByDirection($direction)
+    {
+        return $this->createQueryBuilder('l')
+            ->andWhere('l.direction = :direction')
+            ->setParameter('direction', $direction)
+            ->getQuery()
+            ->getResult();
+    }
 //    /**
 //     * @return Curriculum[] Returns an array of Curriculum objects
 //     */

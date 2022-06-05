@@ -1,0 +1,55 @@
+{% extends 'base.html.twig' %}
+
+{% block title %}Создание справки МТО{% endblock %}
+
+{% block body %}
+    {{ include('component/navbar.html.twig') }}
+    <div class="container-fluid mt-5">
+        <table class="table table-bordered border-dark bg-light">
+            <thead>
+            <tr>
+                <th scope="col">№ п/п</th>
+                <th scope="col">Наименование дисциплины (модуля), практик в соответствии с учебным планом</th>
+                <th scope="col">Наименование помещений для проведения всех видов учебной деятельности,
+                    предусмотренной учебным планом, в том числе помещения для самостоятельной
+                    работы, с указанием перечня основного оборудования, учебно- наглядных пособий
+                    и используемого программного обеспечения
+                </th>
+                <th>Оснащенность учебных кабинетов, лабораторий, мастерских и других помещений для реализации ООП</th>
+            </tr>
+            </thead>
+            <tbody>
+            {% for discipline in disciplines %}
+                <tr>
+                    <th rowspan=
+                        {% if auditoriums[discipline.name][0] != null %}
+                            {{ auditoriums[discipline.name]|length +1 }}
+                        {% else %}
+                        "1"
+                            {% endif %}
+                        scope="row">{{ loop.index }}</th>
+                    <td rowspan=
+                        {% if auditoriums[discipline.name][0] != null %}
+                            {{ auditoriums[discipline.name]|length +1 }}
+                        {% else %}
+                        "1"
+                            {% endif %}>
+                        <p>{{ discipline.name }}</p>
+                    </td>
+                    <td>
+                        <p class="">Учебные аудитории для проведения учебных занятий:</p>
+                    </td>
+                </tr>
+                {% for auditorium in auditoriums[discipline.name] %}
+                    {% if auditorium %}
+                        <tr>
+                            <td><p>{{ auditorium.Number }}</p></td>
+                        </tr>
+
+                    {% endif %}
+                {% endfor %}
+
+            {% endfor %}
+        </table>
+    </div>
+{% endblock %}

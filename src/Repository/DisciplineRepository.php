@@ -55,6 +55,14 @@ class DisciplineRepository extends ServiceEntityRepository
             ->getQuery()
             ->getResult();
     }
+    public function findByCurriculum($curriculum)
+    {
+        return $this->createQueryBuilder('l')
+            ->andWhere('l.curricula = :curriculum')
+            ->setParameter('curriculum', $curriculum)
+            ->getQuery()
+            ->getResult();
+    }
 //    /**
 //     * @return Discipline[] Returns an array of Discipline objects
 //     */

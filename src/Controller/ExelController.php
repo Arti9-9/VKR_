@@ -50,6 +50,7 @@ class ExelController extends AbstractController
             $auditorium->setNumber($row['A']);
             $auditorium->setCountSeats($row['B']);
             $auditorium->setSquare($row['C']);
+
             //проверка на то существует ли уже эта аудитория
             if ($auditoriumRepository->findByNumber($row['A'])) {
                 $equipments = $equipmentRepository->findByAuditorium($auditoriumRepository->findByNumber($row['A'])[0]);

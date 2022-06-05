@@ -77,6 +77,16 @@ class ScheduleRepository extends ServiceEntityRepository
             ->getQuery()
             ->getResult();
     }
+    public function findByGroupByDiscipline($group, $discipline)
+    {
+        return $this->createQueryBuilder('l')
+            ->andWhere('l.groupName LIKE :group')
+            ->andWhere('l.discipline = :discipline')
+            ->setParameter('group' ,$group . "-%")
+            ->setParameter('discipline' , $discipline)
+            ->getQuery()
+            ->getResult();
+    }
 //    /**
 //     * @return Schedule[] Returns an array of Schedule objects
 //     */
