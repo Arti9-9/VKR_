@@ -40,9 +40,14 @@ class Auditorium
     private $Equipment;
 
     /**
-     * @ORM\OneToMany(targetEntity=Schedule::class, mappedBy="auditorium",cascade={"persist"}, orphanRemoval=true)
+     * @ORM\OneToMany(targetEntity=Schedule::class, mappedBy="auditorium",cascade={"remove"}, orphanRemoval=true)
      */
     private $schedules;
+
+    /**
+     * @ORM\Column(type="string", length=255, nullable=true)
+     */
+    private $type;
 
 
     public function __construct()
@@ -152,6 +157,18 @@ class Auditorium
                 $schedule->setAuditorium(null);
             }
         }
+
+        return $this;
+    }
+
+    public function getType(): ?string
+    {
+        return $this->type;
+    }
+
+    public function setType(?string $type): self
+    {
+        $this->type = $type;
 
         return $this;
     }

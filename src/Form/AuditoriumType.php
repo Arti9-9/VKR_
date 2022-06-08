@@ -15,6 +15,7 @@ class AuditoriumType extends AbstractType
             ->add('CountSeats')
             ->add('Number')
             ->add('Square')
+            ->add('type')
         ;
     }
 

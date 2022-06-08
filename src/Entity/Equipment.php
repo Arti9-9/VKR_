@@ -36,9 +36,14 @@ class Equipment
     private $auditorium;
 
     /**
-     * @ORM\OneToMany(targetEntity=Attribute::class, mappedBy="equipment")
+     * @ORM\OneToMany(targetEntity=Attribute::class, mappedBy="equipment", cascade={"persist"}, orphanRemoval="true")
      */
     private $attributes;
+
+    /**
+     * @ORM\ManyToOne(targetEntity=User::class, inversedBy="equipment")
+     */
+    private $owner;
 
     public function __construct()
     {
@@ -112,6 +117,18 @@ class Equipment
                 $attribute->setEquipment(null);
             }
         }
+
+        return $this;
+    }
+
+    public function getOwner(): ?User
+    {
+        return $this->owner;
+    }
+
+    public function setOwner(?User $owner): self
+    {
+        $this->owner = $owner;
 
         return $this;
     }

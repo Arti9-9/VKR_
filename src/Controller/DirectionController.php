@@ -28,7 +28,7 @@ class DirectionController extends AbstractController
     }
 
     /**
-     * @Route("/", name="app_directionUser_index", methods={"GET"})
+     * @Route("/user", name="app_directionUser_index", methods={"GET"})
      */
     public function indexByUser(DirectionRepository $directionRepository): Response
     {

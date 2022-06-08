@@ -43,9 +43,21 @@ class User implements UserInterface, PasswordAuthenticatedUserInterface
      */
     private $direction;
 
+    /**
+     * @ORM\OneToMany(targetEntity=Equipment::class, mappedBy="owner")
+     */
+    private $equipment;
+
+    /**
+     * @ORM\OneToMany(targetEntity=Schedule::class, mappedBy="owner")
+     */
+    private $schedules;
+
     public function __construct()
     {
         $this->direction = new ArrayCollection();
+        $this->equipment = new ArrayCollection();
+        $this->schedules = new ArrayCollection();
     }
 
     public function getId(): ?int
@@ -168,5 +180,65 @@ class User implements UserInterface, PasswordAuthenticatedUserInterface
     public function __toString()
     {
         return $this->login;
+    }
+
+    /**
+     * @return Collection<int, Equipment>
+     */
+    public function getEquipment(): Collection
+    {
+        return $this->equipment;
+    }
+
+    public function addEquipment(Equipment $equipment): self
+    {
+        if (!$this->equipment->contains($equipment)) {
+            $this->equipment[] = $equipment;
+            $equipment->setOwner($this);
+        }
+
+        return $this;
+    }
+
+    public function removeEquipment(Equipment $equipment): self
+    {
+        if ($this->equipment->removeElement($equipment)) {
+            // set the owning side to null (unless already changed)
+            if ($equipment->getOwner() === $this) {
+                $equipment->setOwner(null);
+            }
+        }
+
+        return $this;
+    }
+
+    /**
+     * @return Collection<int, Schedule>
+     */
+    public function getSchedules(): Collection
+    {
+        return $this->schedules;
+    }
+
+    public function addSchedule(Schedule $schedule): self
+    {
+        if (!$this->schedules->contains($schedule)) {
+            $this->schedules[] = $schedule;
+            $schedule->setOwner($this);
+        }
+
+        return $this;
+    }
+
+    public function removeSchedule(Schedule $schedule): self
+    {
+        if ($this->schedules->removeElement($schedule)) {
+            // set the owning side to null (unless already changed)
+            if ($schedule->getOwner() === $this) {
+                $schedule->setOwner(null);
+            }
+        }
+
+        return $this;
     }
 }

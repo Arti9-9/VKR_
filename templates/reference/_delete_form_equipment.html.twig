@@ -1,0 +1,10 @@
+
+<form method="post" action="{{ path('app_equipment_delete_user',{ 'equipment': value.id, 'direction' : direction.id, 'curriculum': curriculum.id}) }}"
+      onsubmit = "return confirm('Вы уверены что хотите удалить это оборудование?');">
+    <input type="hidden" name="_token" value="{{ csrf_token('delete' ~ value.id) }}">
+    <p>- {{ value.name }}
+        <button class="btn btn-delete btn-circle btn-circle-sm m-1 bi bi-x" >
+        </button>
+    </p>
+
+</form>

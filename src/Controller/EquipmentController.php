@@ -2,6 +2,9 @@
 
 namespace App\Controller;
 
+use App\Entity\Curriculum;
+use App\Entity\Direction;
+use App\Entity\Discipline;
 use App\Entity\Equipment;
 use App\Entity\Auditorium;
 use App\Form\EquipmentType;
@@ -31,7 +34,7 @@ class EquipmentController extends AbstractController
     /**
      * @Route("/auditorium/{auditorium}/new", name="app_equipment_new", methods={"GET", "POST"})
      */
-    public function new(Request $request, Auditorium $auditorium ,EquipmentRepository $equipmentRepository): Response
+    public function new(Request $request, Auditorium $auditorium, EquipmentRepository $equipmentRepository): Response
     {
         $equipment = new Equipment();
         $equipment->setAuditorium($auditorium);
@@ -41,6 +44,33 @@ class EquipmentController extends AbstractController
         if ($form->isSubmitted() && $form->isValid()) {
             $equipmentRepository->add($equipment);
             return $this->redirectToRoute('app_auditorium_show', ['id' => $auditorium->getId()], Response::HTTP_SEE_OTHER);
+        }
+
+        return $this->renderForm('equipment/new.html.twig', [
+            'equipment' => $equipment,
+            'form' => $form,
+            'auditorium' => $auditorium,
+        ]);
+    }
+
+    /**
+     * @Route("/{direction}/{curriculum}/auditorium_{auditorium}/new", name="app_equipment_new_user", methods={"GET", "POST"})
+     */
+    public function newByUser(Request   $request, Auditorium $auditorium, EquipmentRepository $equipmentRepository,
+                              Direction $direction, Curriculum $curriculum): Response
+    {
+        $equipment = new Equipment();
+        $equipment->setAuditorium($auditorium);
+        $form = $this->createForm(EquipmentType::class, $equipment);
+        $form->handleRequest($request);
+
+        if ($form->isSubmitted() && $form->isValid()) {
+            $equipment->setOwner($this->getUser());
+            $equipmentRepository->add($equipment);
+            return $this->redirectToRoute('app_reference_table', [
+                'direction' => $direction->getId(),
+                'curriculum' => $curriculum->getId()],
+                Response::HTTP_SEE_OTHER);
         }
 
         return $this->renderForm('equipment/new.html.twig', [
@@ -71,7 +101,7 @@ class EquipmentController extends AbstractController
         $form->handleRequest($request);
 
         if ($form->isSubmitted() && $form->isValid()) {
-           $equipmentRepository->add($equipment);
+            $equipmentRepository->add($equipment);
             return $this->redirectToRoute('app_equipment_show', ['id' => $equipment->getId()], Response::HTTP_SEE_OTHER);
         }
 
@@ -87,10 +117,33 @@ class EquipmentController extends AbstractController
     public function delete(Request $request, Equipment $equipment, EquipmentRepository $equipmentRepository): Response
     {
         $auditoriumId = $equipment->getAuditorium()->getId();
-        if ($this->isCsrfTokenValid('delete'.$equipment->getId(), $request->request->get('_token'))) {
+        if ($this->isCsrfTokenValid('delete' . $equipment->getId(), $request->request->get('_token'))) {
             $equipmentRepository->remove($equipment);
         }
 
         return $this->redirectToRoute('app_auditorium_show', ['id' => $auditoriumId], Response::HTTP_SEE_OTHER);
+    }
+
+    /**
+     * @Route("/{equipment}/{direction}/{curriculum}", name="app_equipment_delete_user", methods={"POST"})
+     */
+    public function deleteByUser(Request $request, Equipment $equipment, EquipmentRepository $equipmentRepository, Direction $direction, Curriculum $curriculum): Response
+    {
+        if ($this->isCsrfTokenValid('delete' . $equipment->getId(), $request->request->get('_token'))) {
+            $equipmentRepository->remove($equipment);
+        }
+        return $this->redirectToRoute('app_reference_table', [
+            'direction' => $direction->getId(),
+            'curriculum' => $curriculum->getId()],
+            Response::HTTP_SEE_OTHER);
+    }
+    /**
+     * @Route("/file_selection/upload", name="app_upload_equipment", methods={"GET"})
+     */
+    public function EquipmentUpload(): Response
+    {
+
+        return $this->render('equipment/upload.html.twig', [
+        ]);
     }
 }

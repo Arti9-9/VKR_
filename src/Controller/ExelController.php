@@ -2,10 +2,13 @@
 
 namespace App\Controller;
 
+use App\Entity\Attribute;
 use App\Entity\Auditorium;
 use App\Entity\Curriculum;
 use App\Entity\Discipline;
+use App\Entity\Equipment;
 use App\Entity\Schedule;
+use App\Repository\AttributeRepository;
 use App\Repository\AuditoriumRepository;
 use App\Repository\CurriculumRepository;
 use App\Repository\DirectionRepository;
@@ -50,7 +53,7 @@ class ExelController extends AbstractController
             $auditorium->setNumber($row['A']);
             $auditorium->setCountSeats($row['B']);
             $auditorium->setSquare($row['C']);
-
+            $auditorium->setType(($row['D']));
             //проверка на то существует ли уже эта аудитория
             if ($auditoriumRepository->findByNumber($row['A'])) {
                 $equipments = $equipmentRepository->findByAuditorium($auditoriumRepository->findByNumber($row['A'])[0]);
@@ -61,13 +64,13 @@ class ExelController extends AbstractController
                         $equipmentRepository->remove($equipment);
                     }
                 }
+                //каскадно удалится расписание
                 $auditoriumRepository->remove($auditoriumRepository->findByNumber($row['A'])[0]);
                 //возвращаем оборудование оттносящиеся к аудитории
                 foreach ($equipments as $equipment) {
                     $equipment->setAuditorium($auditorium);
                 }
             }
-
 
             $auditoriumRepository->add($auditorium);
         }
@@ -91,7 +94,7 @@ class ExelController extends AbstractController
             $discipline = $disciplineRepository->findByName($row['A']);
             $auditorium = $auditoriumRepository->findByNumber($row['B']);
             //если в БД есть такая аудитория и дисциплина
-
+            if ($discipline and $auditorium) {
                 //проверка нет ли уже такой записи в БД
                 if (!$scheduleRepository->findByAuditoriumDisciplineGroup($auditorium[0], $discipline[0], $row['C'])) {
                     $schedule->setAuditorium($auditorium[0]);
@@ -99,7 +102,7 @@ class ExelController extends AbstractController
                     $schedule->setGroupName($row['C']);
                     $scheduleRepository->add($schedule);
                 }
-
+            }
         }
 
         $schedule = $scheduleRepository->findOrderBy();
@@ -184,4 +187,62 @@ class ExelController extends AbstractController
             'curricula' => $curriculumRepository->findAll(),
         ]);
     }
+
+    /**
+     * @Route("/handleUploadEquipment", name="handle_upload_equipment")
+     */
+    public function handleUploadEquipment(Request $request, AuditoriumRepository $auditoriumRepository, EquipmentRepository $equipmentRepository, AttributeRepository $attributeRepository)
+    {
+        $file = $request->files->get('file');
+        $spreadsheet = IOFactory::load($file);
+        $sheetData = $spreadsheet->getActiveSheet()->toArray(null, true, true, true); // here, the read data is turned into an array
+        $equipments = array();
+        foreach ($sheetData as $row) {
+            $equipments[$row['A']][$row['B']][$row['C']][] = $row['D'];
+            $equipments[$row['A']][$row['B']][$row['C']][] = $row['E'];
+            $equipments[$row['A']][$row['B']][$row['C']][] = $row['F'];
+        }
+        foreach ($equipments as $number => $instrumentations) {
+            $equipment = new Equipment();
+            //dd($instrumentation);
+            $auditorium = $auditoriumRepository->findByNumber($number);
+            if ($auditorium) {
+                foreach ($instrumentations as $category => $instrumentation) {
+                    $equipment->setAuditorium($auditorium[0]);
+                    $equipment->setName(key($instrumentation));
+                    $equipment->setCategory($category);
+                    //проверяем есть ли такая запись в БД и если есть то удаляем
+                    $equipmentDelete = $equipmentRepository->findAnExistingRecord($auditorium[0], $category, key($instrumentation));
+                    if ($equipmentDelete) {
+                        $equipmentRepository->remove($equipmentDelete[0]);
+                    }
+                    $equipmentRepository->add($equipment);
+                    foreach ($instrumentation as $attributes) {
+                        //заполняем атрибуты(если они имеются
+                        {
+                            if ($attributes[0]) {
+                                $length = count($attributes);
+                                for ($i = 0; $i < $length; $i = $i + 3) {
+                                    $attribute = new Attribute();
+                                    $attribute->setName($attributes[$i]);
+                                    if ($attributes[$i + 1]) {
+                                        $attribute->setValue($attributes[$i + 1]);
+                                    }
+                                    if ($attributes[$i + 2]) {
+                                        $attribute->setUnitMeasurements($attributes[$i + 2]);
+                                    }
+                                    $attribute->setEquipment($equipment);
+                                    $attributeRepository->add($attribute);
+                                }
+                            }
+                        }
+
+                    }
+                }
+            }
+        }
+
+        return $this->redirectToRoute('app_auditorium_index', [], Response::HTTP_SEE_OTHER);
+    }
+
 }

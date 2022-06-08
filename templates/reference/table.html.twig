@@ -5,6 +5,7 @@
 {% block body %}
     {{ include('component/navbar.html.twig') }}
     <div class="container-fluid mt-5">
+        <h1>{{ direction.name }}</h1>
         <table class="table table-bordered border-dark bg-light">
             <thead>
             <tr>
@@ -21,6 +22,7 @@
             <tbody>
             {% for discipline in disciplines %}
                 <tr>
+                    {# нумерация -первый столбец #}
                     <th rowspan=
                         {% if auditoriums[discipline.name][0] != null %}
                             {{ auditoriums[discipline.name]|length +1 }}
@@ -28,6 +30,7 @@
                         "1"
                             {% endif %}
                         scope="row">{{ loop.index }}</th>
+                    {# дисциплина #}
                     <td rowspan=
                         {% if auditoriums[discipline.name][0] != null %}
                             {{ auditoriums[discipline.name]|length +1 }}
@@ -36,14 +39,54 @@
                             {% endif %}>
                         <p>{{ discipline.name }}</p>
                     </td>
+                    {# 3ий столбец с шапка и кнопка добавления аудитории #}
                     <td>
                         <p class="">Учебные аудитории для проведения учебных занятий:</p>
+                        <p class="text-success"><strong><small>Добавить аудиторию</small></strong>
+                            <a href="{{ path('app_schedule_new',{'direction' : direction.id, 'curriculum': curriculum.id, 'discipline' :discipline.id}) }}"
+                               class="btn btn-add btn-circle btn-circle-sm m-1">
+                                <i class="bi bi-plus"></i>
+                            </a>
+                        </p>
                     </td>
                 </tr>
                 {% for auditorium in auditoriums[discipline.name] %}
                     {% if auditorium %}
                         <tr>
-                            <td><p>{{ auditorium.Number }}</p></td>
+                            {# аудитории #}
+                            <td>
+                                {# проверим есть ли добавленые полььзователем аудитоиии #}
+                                {% if auditorium[1] %}
+                                    {{ include('reference/_delete_form_schedule.html.twig') }}
+                                {% else %}
+                                    <p>{{ auditorium[0].Number }} - {{ auditorium[0].type }}</p>
+                                    <p>Рабочих мест для студентов – {{ auditorium[0].CountSeats }}</p>
+                                {% endif %}
+                            </td>
+
+                            {# вывод оснощенности по категориям #}
+                            <td>
+                                {# добавить оснащенность #}
+                                <p class="text-success"><strong><small>Добавить оснащенность</small></strong>
+                                    <a href="{{ path('app_equipment_new_user',{'direction' : direction.id, 'curriculum': curriculum.id, 'auditorium' :auditorium[0].id}) }}"
+                                       class="btn btn-add btn-circle btn-circle-sm m-1">
+                                        <i class="bi bi-plus"></i>
+                                    </a>
+                                </p>
+                                {% for key, values in equipments[auditorium[0].Number] %}
+                                    <p><strong>{{ key }}:</strong></p>
+                                    {% for value in values %}
+                                        {# если это добавил позьзователь то дать возможность удалить #}
+                                        {% if value.owner %}
+                                            {{ include('reference/_delete_form_equipment.html.twig') }}
+                                        {% else %}
+                                            <p>- {{ value.name }}</p>
+                                        {% endif %}
+                                    {% endfor %}
+
+                                {% endfor %}
+
+                            </td>
                         </tr>
 
                     {% endif %}
@@ -52,4 +95,30 @@
             {% endfor %}
         </table>
     </div>
+    <style>
+        .btn-circle {
+            width: 40px;
+            height: 40px;
+            line-height: 40px;
+            text-align: center;
+            padding: 0;
+            border-radius: 50%;
+            hover
+        }
+
+        .btn-circle-sm {
+            width: 30px;
+            height: 30px;
+            line-height: 30px;
+            font-size: 0.9rem;
+        }
+        .btn-add:hover {
+            background: #13653f;
+            color:white;
+        }
+        .btn-delete:hover {
+            background: #bb2d3b;
+            color:white;
+        }
+    </style>
 {% endblock %}

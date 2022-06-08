@@ -1,0 +1,13 @@
+{% extends 'base.html.twig' %}
+
+{% block title %}Добавить строку в расписание{% endblock %}
+
+{% block body %}
+    {{ include('component/navbar.html.twig') }}
+    <h1>Выберите аудиторию:</h1>
+    {{ include('schedule/_form.html.twig') }}
+
+    <a href="{{ path('app_reference_table', {'direction':direction.id, 'curriculum':curriculum.id}) }}">Назад</a>
+
+
+{% endblock %}

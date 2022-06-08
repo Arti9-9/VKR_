@@ -18,7 +18,7 @@ class Schedule
     private $id;
 
     /**
-     * @ORM\Column(type="string", length=20)
+     * @ORM\Column(type="string", length=120)
      */
     private $groupName;
 
@@ -33,6 +33,11 @@ class Schedule
      * @ORM\JoinColumn(nullable=false)
      */
     private $discipline;
+
+    /**
+     * @ORM\ManyToOne(targetEntity=User::class, inversedBy="schedules")
+     */
+    private $owner;
 
     public function getId(): ?int
     {
@@ -71,6 +76,18 @@ class Schedule
     public function setDiscipline(?Discipline $discipline): self
     {
         $this->discipline = $discipline;
+
+        return $this;
+    }
+
+    public function getOwner(): ?User
+    {
+        return $this->owner;
+    }
+
+    public function setOwner(?User $owner): self
+    {
+        $this->owner = $owner;
 
         return $this;
     }

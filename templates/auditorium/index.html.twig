@@ -12,7 +12,9 @@
                 <th>Number</th>
                 <th>CountSeats</th>
                 <th>Square</th>
+                <th>type</th>
                 <th>actions</th>
+
             </tr>
         </thead>
         <tbody>
@@ -21,6 +23,7 @@
                 <td>{{ auditorium.Number }}</td>
                 <td>{{ auditorium.CountSeats }}</td>
                 <td>{{ auditorium.Square }}</td>
+                <td>{{ auditorium.type }}</td>
                 <td>
                     <a href="{{ path('app_auditorium_show', {'id': auditorium.id}) }}">show</a>
                     <a href="{{ path('app_auditorium_edit', {'id': auditorium.id}) }}">edit</a>

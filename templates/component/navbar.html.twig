@@ -1,6 +1,6 @@
 {% if is_granted('ROLE_ADMIN') %}
     <nav class="navbar navbar-expand-lg bg-dark bg-gradient">
-        <a class="navbar-brand me-md-auto ps-5 d-flex" href="{{ path('app_users') }}">
+        <a class="navbar-brand me-md-auto ps-1 d-flex" href="{{ path('app_users') }}">
             <img src="" width="50 " height="50" class="d-inline-block align-top" alt="">
             <p class="my-auto ">MTO</p>
         </a>
@@ -8,6 +8,8 @@
            role="button">Загрузить расписание</a>
         <a class="btn  btn-outline-primary text mx-3" href="{{ path('app_upload_auditorium') }}"
            role="button">Загрузить аудитории</a>
+        <a class="btn  btn-outline-primary text mx-3" href="{{ path('app_upload_equipment') }}"
+           role="button">Загрузить оснащенность</a>
         <a class="btn  btn-outline-primary text mx-3" href="{{ path('app_auditorium_index') }}"
            role="button">Аудитории</a>
         <a class="btn  btn-outline-primary text mx-3" href="{{ path('app_schedule_index') }}"
@@ -31,6 +33,8 @@
            role="button">Расписание</a>
         <a class="btn  btn-outline-primary text mx-3" href="{{ path('app_reference') }}"
            role="button">Создать справку</a>
+        <a class="btn  btn-outline-primary text mx-3" href="{{ path('app_reference') }}"
+           role="button">Добавить требования</a>
         <a class="btn  btn-outline-primary text mx-3" href="{{ path('app_curriculum_index') }}"
            role="button">Учебные планы</a>
         <a class="btn  btn-outline-primary text mx-3" href="{{ path('app_directionUser_index') }}"

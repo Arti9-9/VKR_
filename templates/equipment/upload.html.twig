@@ -1,0 +1,9 @@
+{% extends 'base.html.twig' %}
+
+{% block title %}Загрузка оснащенности{% endblock %}
+
+{% block body %}
+    {{ include('component/navbar.html.twig') }}
+    <h1>Загрузить оснащенность:</h1>
+    {{ include('exel/indexEquipment.html.twig') }}
+{% endblock %}

@@ -66,6 +66,19 @@ class EquipmentRepository extends ServiceEntityRepository
             ->getQuery()
             ->getResult();
     }
+
+    public function findAnExistingRecord($auditorium, $category, $name)
+    {
+        return $this->createQueryBuilder('l')
+            ->andWhere('l.auditorium = :auditorium')
+            ->andWhere('l.Category = :category')
+            ->andWhere('l.Name = :name')
+            ->setParameter('auditorium', $auditorium)
+            ->setParameter('category', $category)
+            ->setParameter('name', $name)
+            ->getQuery()
+            ->getResult();
+    }
 //    /**
 //     * @return Equipment[] Returns an array of Equipment objects
 //     */
