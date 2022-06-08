@@ -1,0 +1,12 @@
+{% extends 'base.html.twig' %}
+
+{% block title %}{% endblock %}
+
+{% block body %}
+    {{ include('component/navbar.html.twig') }}
+    <h1>Напишите оснащенность, коороя должно присувствовать в дисциплине {{ discipline.name }}</h1>
+
+    {{ include('requirements/_form.html.twig') }}
+
+    <a href="{{ path('app_requirements_choice_discipline', {'curriculum' : curriculum.id, 'discipline' : discipline}) }}">Назад</a>
+{% endblock %}

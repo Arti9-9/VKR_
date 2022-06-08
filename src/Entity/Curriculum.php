@@ -45,9 +45,15 @@ class Curriculum
      */
     private $disciplines;
 
+    /**
+     * @ORM\OneToMany(targetEntity=Requirements::class, mappedBy="curriculum", orphanRemoval=true)
+     */
+    private $requirements;
+
     public function __construct()
     {
         $this->disciplines = new ArrayCollection();
+        $this->requirements = new ArrayCollection();
     }
 
 
@@ -131,6 +137,36 @@ class Curriculum
     public function removeDiscipline(Discipline $discipline): self
     {
         $this->disciplines->removeElement($discipline);
+
+        return $this;
+    }
+
+    /**
+     * @return Collection<int, Requirements>
+     */
+    public function getRequirements(): Collection
+    {
+        return $this->requirements;
+    }
+
+    public function addRequirement(Requirements $requirement): self
+    {
+        if (!$this->requirements->contains($requirement)) {
+            $this->requirements[] = $requirement;
+            $requirement->setCurriculum($this);
+        }
+
+        return $this;
+    }
+
+    public function removeRequirement(Requirements $requirement): self
+    {
+        if ($this->requirements->removeElement($requirement)) {
+            // set the owning side to null (unless already changed)
+            if ($requirement->getCurriculum() === $this) {
+                $requirement->setCurriculum(null);
+            }
+        }
 
         return $this;
     }

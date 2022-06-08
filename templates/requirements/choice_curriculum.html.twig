@@ -1,0 +1,21 @@
+{% extends 'base.html.twig' %}
+
+{% block title %}Выбор учебного плана{% endblock %}
+
+{% block body %}
+    {{ include('component/navbar.html.twig') }}
+    <h3>Выберите учебный план.</h3>
+    {% for direction in directions %}
+        <h4>{{ direction.name }}:</h4>
+        <ol>
+            {% for curriculum in curriculums[direction.name] %}
+                <li><a href="{{ path('app_requirements_choice_discipline', {'curriculum' : curriculum.id}) }}">
+                        {{ curriculum.name }}
+                        {{ curriculum.dateCreate|date('H:i Y-m-d') }}
+                    </a></li>
+            {% else %}
+                нет учебных планов
+            {% endfor %}
+        </ol>
+    {% endfor %}
+{% endblock %}

@@ -1,0 +1,17 @@
+{% extends 'base.html.twig' %}
+
+{% block title %}Выбор дисциплины{% endblock %}
+
+{% block body %}
+    {{ include('component/navbar.html.twig') }}
+    <h3>Выберите дисциплину.</h3>
+    <ol>
+        {% for discipline in curriculum.disciplines %}
+            <li><a href="{{ path('app_requirements_new', {'curriculum' : curriculum.id, 'discipline' : discipline.id}) }}">
+                    {{ discipline.name }}
+                </a></li>
+        {% else %}
+            нет дисциплин
+        {% endfor %}
+    </ol>
+{% endblock %}

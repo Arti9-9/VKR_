@@ -34,6 +34,11 @@ class Discipline
      */
     private $schedules;
 
+    /**
+     * @ORM\OneToMany(targetEntity=Requirements::class, mappedBy="discipline", orphanRemoval=true)
+     */
+    private $requirements;
+
 
 
 
@@ -41,6 +46,7 @@ class Discipline
     {
         $this->curricula = new ArrayCollection();
         $this->schedules = new ArrayCollection();
+        $this->requirements = new ArrayCollection();
     }
 
     public function __toString()
@@ -116,6 +122,36 @@ class Discipline
             // set the owning side to null (unless already changed)
             if ($schedule->getDiscipline() === $this) {
                 $schedule->setDiscipline(null);
+            }
+        }
+
+        return $this;
+    }
+
+    /**
+     * @return Collection<int, Requirements>
+     */
+    public function getRequirements(): Collection
+    {
+        return $this->requirements;
+    }
+
+    public function addRequirement(Requirements $requirement): self
+    {
+        if (!$this->requirements->contains($requirement)) {
+            $this->requirements[] = $requirement;
+            $requirement->setDiscipline($this);
+        }
+
+        return $this;
+    }
+
+    public function removeRequirement(Requirements $requirement): self
+    {
+        if ($this->requirements->removeElement($requirement)) {
+            // set the owning side to null (unless already changed)
+            if ($requirement->getDiscipline() === $this) {
+                $requirement->setDiscipline(null);
             }
         }
 
