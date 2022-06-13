@@ -2,47 +2,32 @@
 
 namespace App\Controller;
 
-use App\Entity\Auditorium;
 use App\Entity\Curriculum;
 use App\Entity\Direction;
 use App\Entity\Discipline;
-use App\Repository\CurriculumRepository;
-use App\Repository\DirectionRepository;
-use App\Repository\DisciplineRepository;
 use App\Repository\EquipmentRepository;
 use App\Repository\RequirementsRepository;
 use App\Repository\ScheduleRepository;
 use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
 use Symfony\Component\HttpFoundation\Response;
 use Symfony\Component\Routing\Annotation\Route;
+use Dompdf\Dompdf;
+use Dompdf\Options;
 
-/**
- * @Route("/reference")
- */
-class ReferenceController extends AbstractController
+class PDFController extends AbstractController
 {
     /**
-     * @Route("/", name="app_reference")
+     * @Route("/reportPDF/{direction}/{curriculum}", name="app_pdf_report", methods={"GET"})
      */
-    public function index(DirectionRepository $directionRepository, CurriculumRepository $curriculumRepository): Response
+    public function report(Direction $direction, Curriculum $curriculum, ScheduleRepository $scheduleRepository, EquipmentRepository $equipmentRepository, RequirementsRepository $requirementsRepository): Response
     {
-        $directions = $directionRepository->findByUser($this->getUser());
-        $curriculums = array();
-        foreach ($directions as $direction) {
-            $curriculums[$direction->getName()] = $curriculumRepository->findByDirection($direction);
-        }
-        return $this->render('reference/index.html.twig', [
-            'directions' => $directions,
-            'curriculums' => $curriculums,
-        ]);
-    }
+        // Configure Dompdf according to your needs
+        $pdfOptions = new Options();
+        $pdfOptions->set('defaultFont', 'arial');
+// Instantiate Dompdf with our options
+        $dompdf = new Dompdf($pdfOptions);
+// Retrieve the HTML generated in our twig file
 
-    /**
-     * @Route("/table/{direction}/{curriculum}", name="app_reference_table")
-     */
-    public function table(Direction $direction, Curriculum $curriculum, ScheduleRepository $scheduleRepository, EquipmentRepository $equipmentRepository, RequirementsRepository $requirementsRepository): Response
-    {
-        //дисциплины
         $disciplines = $curriculum->getDisciplines();
         //аудитории в которых проводятся занятия по дисциплинам данного направления
         $auditoriums = array();
@@ -107,12 +92,29 @@ class ReferenceController extends AbstractController
                         }
 
                     }
-                    $checking[$auditorium['auditorium']->getNumber()] = $this->verificationByRequirements($nameEquipments, $requirementsRepository, $discipline, $curriculum);
 
                 }
             }
         }
-        return $this->render('reference/table.html.twig', [
+        $html = $this->renderView('pdf/reportPDF.html.twig', [
+            'direction' => $direction,
+            'curriculum' => $curriculum,
+            'disciplines' => $disciplines,
+            'auditoriums' => $auditoriums,
+            'equipments' => $equipments,
+        ]);
+
+// Load HTML to Dompdf
+        $dompdf->loadHtml($html,'UTF-8');
+// (Optional) Setup the paper size and orientation 'portrait' or 'portrait'
+        $dompdf->setPaper('A4', 'landscape');
+// Render the HTML as PDF
+        $dompdf->render();
+// Output the generated PDF to Browser (force download)
+        $dompdf->stream("mypdf.pdf", [
+            "Attachment" => false
+        ]);
+        return $this->render('pdf/reportPDF.html.twig', [
             'direction' => $direction,
             'curriculum' => $curriculum,
             'disciplines' => $disciplines,
@@ -122,22 +124,4 @@ class ReferenceController extends AbstractController
         ]);
     }
 
-    public function verificationByRequirements(array $nameEquipments, RequirementsRepository $requirementsRepository, Discipline $discipline, Curriculum $curriculum): bool
-    {
-        $message = array();
-        //получаем массив требований по данной дисциплине инапавлению(учебный план)
-        $requirements = $requirementsRepository->findByCurriculumDiscipline($curriculum, $discipline);
-
-        $check = true;
-
-        //проверка квлючает ли в себя аудитория все необходимое оборудование сошласно требованиям
-        foreach ($requirements as $requirement) {
-            $key = array_search($requirement->getNameEquipment(), $nameEquipments);
-            if ($key === false) {
-                $check = false;
-            }
-        }
-
-        return $check;
-    }
 }

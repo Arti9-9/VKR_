@@ -53,10 +53,10 @@ class ScheduleRepository extends ServiceEntityRepository
         return $this->createQueryBuilder('l')
             ->andWhere('l.auditorium = :auditorium')
             ->andWhere('l.discipline = :discipline')
-            ->andWhere('l.groupName = :group')
+            ->andWhere('l.groupName LIKE :group')
             ->setParameter('auditorium', $auditorium)
             ->setParameter('discipline', $discipline)
-            ->setParameter('group', $group)
+            ->setParameter('group', $group . "-%")
             ->getQuery()
             ->getResult();
     }

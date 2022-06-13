@@ -47,6 +47,26 @@ class RequirementsRepository extends ServiceEntityRepository
         }
     }
 
+    public function findByCurriculum($curriculum)
+    {
+        return $this->createQueryBuilder('l')
+            ->andWhere('l.curriculum = :curriculum')
+            ->setParameter('curriculum', $curriculum)
+            ->getQuery()
+            ->getResult();
+    }
+    public function findByCurriculumDiscipline($curriculum, $discipline)
+    {
+        return $this->createQueryBuilder('l')
+            ->andWhere('l.curriculum = :curriculum')
+            ->andWhere('l.discipline = :discipline')
+            ->setParameter('curriculum', $curriculum)
+            ->setParameter('discipline', $discipline)
+            ->getQuery()
+            ->getResult();
+    }
+
+
 //    /**
 //     * @return Requirements[] Returns an array of Requirements objects
 //     */

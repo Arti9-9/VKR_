@@ -1,0 +1,12 @@
+{% extends 'base.html.twig' %}
+
+{% block title %}{% endblock %}
+
+{% block body %}
+    {{ include('component/navbar.html.twig') }}
+    <h1>Добавление атрибутов к требованию по {{ requirements.nameEquipment }}</h1>
+
+    {{ include('requirements/_form.html.twig') }}
+
+    <a href="">Назад</a>
+{% endblock %}

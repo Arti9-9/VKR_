@@ -202,46 +202,47 @@ class ExelController extends AbstractController
             $equipments[$row['A']][$row['B']][$row['C']][] = $row['E'];
             $equipments[$row['A']][$row['B']][$row['C']][] = $row['F'];
         }
-        foreach ($equipments as $number => $instrumentations) {
-            $equipment = new Equipment();
+        foreach ($equipments as $number => $categories) {
+
             //dd($instrumentation);
             $auditorium = $auditoriumRepository->findByNumber($number);
+
             if ($auditorium) {
-                foreach ($instrumentations as $category => $instrumentation) {
-                    $equipment->setAuditorium($auditorium[0]);
-                    $equipment->setName(key($instrumentation));
-                    $equipment->setCategory($category);
-                    //проверяем есть ли такая запись в БД и если есть то удаляем
-                    $equipmentDelete = $equipmentRepository->findAnExistingRecord($auditorium[0], $category, key($instrumentation));
-                    if ($equipmentDelete) {
-                        $equipmentRepository->remove($equipmentDelete[0]);
-                    }
-                    $equipmentRepository->add($equipment);
-                    foreach ($instrumentation as $attributes) {
+                $d = array();
+                foreach ($categories as $category) {
+                    foreach ($category as $nameEquipment => $attributes) {
+                        $equipment = new Equipment();
+                        $equipment->setAuditorium($auditorium[0]);
+                        $equipment->setName($nameEquipment);
+                        $equipment->setCategory(key($categories));
+                        //проверяем есть ли такая запись в БД и если есть то удаляем
+                        $equipmentDelete = $equipmentRepository->findAnExistingRecord($auditorium[0], key($category), $nameEquipment);
+                        foreach ($equipmentDelete as $delete) {
+                            $equipmentRepository->remove($delete);
+                        }
+                        $equipmentRepository->add($equipment);
+                        $d[] = $equipment;
                         //заполняем атрибуты(если они имеются
-                        {
-                            if ($attributes[0]) {
-                                $length = count($attributes);
-                                for ($i = 0; $i < $length; $i = $i + 3) {
-                                    $attribute = new Attribute();
-                                    $attribute->setName($attributes[$i]);
-                                    if ($attributes[$i + 1]) {
-                                        $attribute->setValue($attributes[$i + 1]);
-                                    }
-                                    if ($attributes[$i + 2]) {
-                                        $attribute->setUnitMeasurements($attributes[$i + 2]);
-                                    }
-                                    $attribute->setEquipment($equipment);
-                                    $attributeRepository->add($attribute);
+                        if ($attributes[0] != null) {
+                            $length = count($attributes);
+                            for ($i = 0; $i < $length; $i = $i + 3) {
+                                $attribute = new Attribute();
+                                $attribute->setName($attributes[$i]);
+                                if ($attributes[$i + 1]) {
+                                    $attribute->setValue($attributes[$i + 1]);
                                 }
+                                if ($attributes[$i + 2]) {
+                                    $attribute->setUnitMeasurements($attributes[$i + 2]);
+                                }
+                                $attribute->setEquipment($equipment);
+                                $attributeRepository->add($attribute);
                             }
                         }
-
                     }
                 }
+
             }
         }
-
         return $this->redirectToRoute('app_auditorium_index', [], Response::HTTP_SEE_OTHER);
     }
 

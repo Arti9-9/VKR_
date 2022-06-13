@@ -50,6 +50,9 @@ class Curriculum
      */
     private $requirements;
 
+
+
+
     public function __construct()
     {
         $this->disciplines = new ArrayCollection();
@@ -170,5 +173,7 @@ class Curriculum
 
         return $this;
     }
+
+
 
 }

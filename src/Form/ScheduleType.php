@@ -6,6 +6,7 @@ use App\Entity\Attribute;
 use App\Entity\Auditorium;
 use App\Entity\Schedule;
 use App\Repository\AuditoriumRepository;
+use Doctrine\DBAL\Types\TextType;
 use Doctrine\ORM\EntityRepository;
 use phpDocumentor\Reflection\Types\ClassString;
 use Symfony\Bridge\Doctrine\Form\Type\EntityType;
@@ -19,14 +20,15 @@ class ScheduleType extends AbstractType
     {
 
         $builder
-            ->add('auditorium', EntityType::class,[
+            ->add('auditorium', EntityType::class, [
                 'class' => Auditorium::class,
-                'query_builder'=> function(EntityRepository $er){
+                'query_builder' => function (EntityRepository $er) {
                     return $er->createQueryBuilder('u')
                         ->orderBy('u.Number', 'ASC');
                 },
+                'label' => 'выберите аудиторию',
             ])
-        ;
+            ->add('description', );
     }
 
     public function configureOptions(OptionsResolver $resolver): void

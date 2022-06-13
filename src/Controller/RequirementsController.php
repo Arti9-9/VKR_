@@ -2,11 +2,14 @@
 
 namespace App\Controller;
 
+use App\Entity\AtributesForRequirement;
 use App\Entity\Auditorium;
 use App\Entity\Curriculum;
 use App\Entity\Discipline;
 use App\Entity\Requirements;
+use App\Form\AtributeForRequirementType;
 use App\Form\RequirementsType;
+use App\Repository\AtributesForRequirementRepository;
 use App\Repository\CurriculumRepository;
 use App\Repository\DirectionRepository;
 use App\Repository\RequirementsRepository;
@@ -23,14 +26,17 @@ class RequirementsController extends AbstractController
     /**
      * @Route("/", name="app_requirements_index", methods={"GET"})
      */
-    public function index( $entityManager): Response
+    public function index( DirectionRepository $directionRepository, RequirementsRepository $requirementsRepository): Response
     {
-        $requirements = $entityManager
-            ->getRepository(Requirements::class)
-            ->findAll();
-
+        $directions = $directionRepository->findByUser($this->getUser());
+        $requirements =array();
+        foreach ($directions as $direction) {
+            foreach ($direction->getCurriculum() as $curriculum) {
+                $requirements[$direction->getName()][$curriculum->getName()] = $requirementsRepository->findByCurriculum($curriculum);
+            }
+        }
         return $this->render('requirements/index.html.twig', [
-            'requirements' => $requirements,
+            'data' => $requirements,
         ]);
     }
     /**
@@ -85,48 +91,48 @@ class RequirementsController extends AbstractController
     }
 
     /**
-     * @Route("/requirements{requirements}/new_atributes", name="app_requirement_new_atributes", methods={"GET", "POST"})
+     * @Route("/requirements{requirements}/new_atributes", name="app_requirement_new_attributes", methods={"GET", "POST"})
      */
-    public function newAtributs(Request $request, Curriculum $curriculum, Discipline $discipline, RequirementsRepository $requirementsRepository): Response
+    public function newAttributes(Request $request, Requirements $requirements, AtributesForRequirementRepository $repository): Response
     {
-        $requirement = new Requirements();
-        $form = $this->createForm(RequirementsType::class, $requirement);
+        $attribute = new AtributesForRequirement();
+        $form = $this->createForm(AtributeForRequirementType::class, $attribute);
         $form->handleRequest($request);
 
         if ($form->isSubmitted() && $form->isValid()) {
-            $requirement->setCurriculum($curriculum);
-            $requirement->setDiscipline($discipline);
-            $requirementsRepository->add($requirement);
+            $attribute->setRequipment($requirements);
+            $repository->add($attribute);
             return $this->redirectToRoute('app_requirements_index', [], Response::HTTP_SEE_OTHER);
         }
 
-        return $this->renderForm('requirements/new.html.twig', [
-            'requirement' => $requirement,
+        return $this->renderForm('requirements/newAttribute.html.twig', [
+            'requirements' => $requirements,
             'form' => $form,
-            'discipline' => $discipline,
         ]);
     }
 
     /**
      * @Route("/{id}", name="app_requirements_show", methods={"GET"})
      */
-    public function show(Requirements $requirement): Response
+    public function show(Requirements $requirement, AtributesForRequirementRepository $repository): Response
     {
+        $attributes = $repository->findByRequirements($requirement);
         return $this->render('requirements/show.html.twig', [
             'requirement' => $requirement,
+            'attributes' => $attributes,
         ]);
     }
 
     /**
      * @Route("/{id}/edit", name="app_requirements_edit", methods={"GET", "POST"})
      */
-    public function edit(Request $request, Requirements $requirement, EntityManagerInterface $entityManager): Response
+    public function edit(Request $request, Requirements $requirement, RequirementsRepository  $requirementsRepository): Response
     {
         $form = $this->createForm(RequirementsType::class, $requirement);
         $form->handleRequest($request);
 
         if ($form->isSubmitted() && $form->isValid()) {
-            $entityManager->flush();
+            $requirementsRepository->add($requirement);
 
             return $this->redirectToRoute('app_requirements_index', [], Response::HTTP_SEE_OTHER);
         }

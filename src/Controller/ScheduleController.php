@@ -2,6 +2,7 @@
 
 namespace App\Controller;
 
+use App\Entity\Auditorium;
 use App\Entity\Curriculum;
 use App\Entity\Direction;
 use App\Entity\Discipline;
@@ -72,18 +73,19 @@ class ScheduleController extends AbstractController
     /**
      * @Route("/new/{direction}/{curriculum}/{discipline}", name="app_schedule_new", methods={"GET", "POST"})
      */
-    public function new(Request $request, Discipline $discipline, Curriculum $curriculum, Direction $direction, ScheduleRepository $scheduleRepository,
-    AuditoriumRepository $auditoriumRepository): Response
+    public function new(Request              $request, Discipline $discipline, Curriculum $curriculum, Direction $direction, ScheduleRepository $scheduleRepository,
+                        AuditoriumRepository $auditoriumRepository): Response
     {
         $schedule = new Schedule();
-        $auditoriums=$auditoriumRepository->findAll();
         $form = $this->createForm(ScheduleType::class, $schedule);
         $form->handleRequest($request);
         if ($form->isSubmitted() && $form->isValid()) {
+            if(!$scheduleRepository->findByAuditoriumDisciplineGroup($form->getData()->getAuditorium(), $discipline, $direction->getNameGroup())){
             $schedule->setOwner($this->getUser());
             $schedule->setDiscipline($discipline);
             $schedule->setGroupName($direction->getNameGroup() . '- правки пользователя');
             $scheduleRepository->add($schedule);
+            }
             return $this->redirectToRoute('app_reference_table', [
                     'direction' => $direction->getId(),
                     'curriculum' => $curriculum->getId()]
@@ -95,6 +97,26 @@ class ScheduleController extends AbstractController
             'curriculum' => $curriculum,
             'form' => $form,
         ]);
+    }
+
+    /**
+     * @Route("/new/description/{direction}/{curriculum}/{discipline}/{auditorium}", name="app_schedule_description_new", methods={"GET", "POST"})
+     */
+    public function newDescription(Request              $request, Discipline $discipline, Curriculum $curriculum, Direction $direction, ScheduleRepository $scheduleRepository,
+                                   Auditorium $auditorium): Response
+    {
+       $description = $request->request->get('description');
+       //получаем нужнуые нам строку расписания
+        $schedules = $scheduleRepository->findByAuditoriumDisciplineGroup($auditorium,$discipline, $direction->getNameGroup());
+        //добавляем описание ко всем строкам расписания по данной дисциплине в данном кабинете по данному направлению
+        foreach ($schedules as $schedule) {
+            $schedule->setDescription($description);
+            $scheduleRepository->add($schedule);
+        }
+        return $this->redirectToRoute('app_reference_table', [
+                'direction' => $direction->getId(),
+                'curriculum' => $curriculum->getId()]
+            , Response::HTTP_SEE_OTHER);
     }
 
     /**

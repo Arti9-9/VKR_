@@ -4,17 +4,20 @@
 
 {% block body %}
     {{ include('component/navbar.html.twig') }}
+    <a class="btn btn-primary"
+       href="{{ path('app_pdf_report', {'direction' : direction.id, 'curriculum' : curriculum.id }) }}">печать</a>
     <div class="container-fluid mt-5">
         <h1>{{ direction.name }}</h1>
         <table class="table table-bordered border-dark bg-light">
             <thead>
             <tr>
                 <th scope="col">№ п/п</th>
-                <th scope="col">Наименование дисциплины (модуля), практик в соответствии с учебным планом</th>
-                <th scope="col">Наименование помещений для проведения всех видов учебной деятельности,
-                    предусмотренной учебным планом, в том числе помещения для самостоятельной
-                    работы, с указанием перечня основного оборудования, учебно- наглядных пособий
-                    и используемого программного обеспечения
+                <th class="col">Наименование вида образования, уровня образования, профессии, специальности, направления
+                    подготовки (для профессионального образования), подвида дополнительного образования
+                </th>
+                <th class="col">Адрес (местоположение) объекта, подтверждающего наличие материально-технического
+                    обеспечения (с указанием номера такого объекта в соответствии с документами по технической
+                    инвентаризации)
                 </th>
                 <th>Оснащенность учебных кабинетов, лабораторий, мастерских и других помещений для реализации ООП</th>
             </tr>
@@ -22,65 +25,87 @@
             <tbody>
             {% for discipline in disciplines %}
                 <tr>
-                    {# нумерация -первый столбец #}
-                    <th rowspan=
-                        {% if auditoriums[discipline.name][0] != null %}
+                {# нумерация -первый столбец #}
+                <th rowspan=
+                    {% if auditoriums[discipline.name][0] != null %}
                             {{ auditoriums[discipline.name]|length +1 }}
                         {% else %}
-                        "1"
-                            {% endif %}
-                        scope="row">{{ loop.index }}</th>
-                    {# дисциплина #}
-                    <td rowspan=
-                        {% if auditoriums[discipline.name][0] != null %}
+                    "1"
+                        {% endif %}
+                    scope="row">{{ loop.index }}.
+                </th>
+                {# дисциплина #}
+                <td rowspan=
+                    {% if auditoriums[discipline.name][0] != null %}
                             {{ auditoriums[discipline.name]|length +1 }}
                         {% else %}
-                        "1"
-                            {% endif %}>
-                        <p>{{ discipline.name }}</p>
-                    </td>
-                    {# 3ий столбец с шапка и кнопка добавления аудитории #}
-                    <td>
-                        <p class="">Учебные аудитории для проведения учебных занятий:</p>
-                        <p class="text-success"><strong><small>Добавить аудиторию</small></strong>
-                            <a href="{{ path('app_schedule_new',{'direction' : direction.id, 'curriculum': curriculum.id, 'discipline' :discipline.id}) }}"
-                               class="btn btn-add btn-circle btn-circle-sm m-1">
-                                <i class="bi bi-plus"></i>
-                            </a>
-                        </p>
-                    </td>
-                </tr>
+                    "1"
+                        {% endif %}>
+                    <p>{{ discipline.name }}</p>
+                    <p class="text-success"><strong><small>Добавить аудиторию</small></strong>
+                        <a href="{{ path('app_schedule_new',{'direction' : direction.id, 'curriculum': curriculum.id, 'discipline' :discipline.id}) }}"
+                           class="btn btn-add btn-circle btn-circle-sm m-1">
+                            <i class="bi bi-plus"></i>
+                        </a>
+                    </p>
+                </td>
                 {% for auditorium in auditoriums[discipline.name] %}
                     {% if auditorium %}
+
                         <tr>
                             {# аудитории #}
                             <td>
-                                {# проверим есть ли добавленые полььзователем аудитоиии #}
-                                {% if auditorium[1] %}
+                                {# проверка по требованиям #}
+                                {% if not checking[auditorium['auditorium'].Number] %}
+                                    <p>
+                                        <mark class="text-danger">Внимание!!! Аудитория не соответствует требованиям.
+                                        </mark>
+                                    </p>
+                                {% endif %}
+
+                                {# если есть аудитория добавленная пользователем #}
+                                {% if auditorium['schedule'] %}
                                     {{ include('reference/_delete_form_schedule.html.twig') }}
                                 {% else %}
-                                    <p>{{ auditorium[0].Number }} - {{ auditorium[0].type }}</p>
-                                    <p>Рабочих мест для студентов – {{ auditorium[0].CountSeats }}</p>
+                                    <p>{{ auditorium['auditorium'].Number }} - {{ auditorium['auditorium'].type }}
                                 {% endif %}
+                                {# если есть описание по данно аудиториии #}
+                                {% if auditorium['description'] %}
+
+                                        {{ auditorium['description'] }}
+
+                                {% else %}
+                                    {{ include('reference/_form_new_description.html.twig') }}
+                                {% endif %}
+                                    </p>
+
+                                <p>Рабочих мест для студентов – {{ auditorium['auditorium'].CountSeats }}</p>
                             </td>
 
                             {# вывод оснощенности по категориям #}
                             <td>
                                 {# добавить оснащенность #}
                                 <p class="text-success"><strong><small>Добавить оснащенность</small></strong>
-                                    <a href="{{ path('app_equipment_new_user',{'direction' : direction.id, 'curriculum': curriculum.id, 'auditorium' :auditorium[0].id}) }}"
+                                    <a href="{{ path('app_equipment_new_user',{'direction' : direction.id, 'curriculum': curriculum.id, 'auditorium' :auditorium['auditorium'].id}) }}"
                                        class="btn btn-add btn-circle btn-circle-sm m-1">
                                         <i class="bi bi-plus"></i>
                                     </a>
                                 </p>
-                                {% for key, values in equipments[auditorium[0].Number] %}
+                                {% for key, values in equipments[auditorium['auditorium'].Number] %}
                                     <p><strong>{{ key }}:</strong></p>
                                     {% for value in values %}
                                         {# если это добавил позьзователь то дать возможность удалить #}
                                         {% if value.owner %}
                                             {{ include('reference/_delete_form_equipment.html.twig') }}
                                         {% else %}
-                                            <p>- {{ value.name }}</p>
+                                            <p>- {{ value.name }}
+                                                {% for attribute in value.attributes %}
+                                                    {{ attribute.Name }} - {{ attribute.Value }}
+                                                    {% if attribute.UnitMeasurements %}
+                                                        {{ attribute.UnitMeasurements }}
+                                                    {% endif %}
+                                                {% endfor %}
+                                            </p>
                                         {% endif %}
                                     {% endfor %}
 
@@ -88,6 +113,12 @@
 
                             </td>
                         </tr>
+
+                    {% else %}
+                        <td>
+                            <mark class="text-danger"> В расписании не нашлось аудиторий по данной дисциплине.</mark>
+                        </td>
+                        <td></td>
 
                     {% endif %}
                 {% endfor %}
@@ -112,13 +143,15 @@
             line-height: 30px;
             font-size: 0.9rem;
         }
+
         .btn-add:hover {
             background: #13653f;
-            color:white;
+            color: white;
         }
+
         .btn-delete:hover {
             background: #bb2d3b;
-            color:white;
+            color: white;
         }
     </style>
 {% endblock %}

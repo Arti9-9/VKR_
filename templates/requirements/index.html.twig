@@ -1,35 +1,37 @@
 {% extends 'base.html.twig' %}
 
-{% block title %}Requirements index{% endblock %}
-
+{% block title %}Требования{% endblock %}
 {% block body %}
-    <h1>Requirements index</h1>
 
-    <table class="table">
-        <thead>
-            <tr>
-                <th>Id</th>
-                <th>NameEquipment</th>
-                <th>actions</th>
-            </tr>
-        </thead>
-        <tbody>
-        {% for requirement in requirements %}
-            <tr>
-                <td>{{ requirement.id }}</td>
-                <td>{{ requirement.nameEquipment }}</td>
-                <td>
-                    <a href="{{ path('app_requirements_show', {'id': requirement.id}) }}">show</a>
-                    <a href="{{ path('app_requirements_edit', {'id': requirement.id}) }}">edit</a>
-                </td>
-            </tr>
-        {% else %}
-            <tr>
-                <td colspan="3">no records found</td>
-            </tr>
+    {{ include('component/navbar.html.twig') }}
+    <h1>Требования к дисциплинам:</h1>
+    {% for direction, curriculums in data %}
+        <h3>{{ direction }}</h3>
+        {% for curriculum, requirements in curriculums %}
+            <h2>{{ curriculum }}</h2>
+            {% for requirement in requirements %}
+                <div class="container-fluid border border-dark">
+                    <div> Для дисциплины "
+                        <mark>{{ requirement.discipline.Name }}</mark>
+                        " требуется
+                        <strong><a href="{{ path('app_requirements_show', {'id' : requirement.id}) }}"> {{ requirement.nameEquipment }}</a></strong>
+                    </div>
+                    {% if requirement.atributes %}
+                        <p> Cо следующими атрибутами:</p>
+                        <ul>
+                            {% for attribute in requirement.atributes %}
+                                <li> {{ attribute.name }} - {{ attribute.value }}
+                                    {% if attribute.unit %}
+                                        {{ attribute.unit }}
+                                    {% endif %}
+                                </li>
+                            {% endfor %}
+                        </ul>
+                    {% endif %}
+                </div>
+            {% endfor %}
+
         {% endfor %}
-        </tbody>
-    </table>
+    {% endfor %}
 
-    <a href="{{ path('app_requirements_new') }}">Create new</a>
 {% endblock %}

@@ -1,0 +1,119 @@
+{% extends 'base.html.twig' %}
+
+{% block title %}Справка МТО{% endblock %}
+
+{% block body %}
+    {{ include('component/tableSection1.html.twig') }}
+    <table class="tg" style="font-size: 11px;">
+        {{ include('component/tableHeader.html.twig') }}
+        <tbody>
+        {% for discipline in disciplines %}
+            <tr>
+            {# нумерация -первый столбец #}
+            <th class="tg-center">{{ loop.index }}</th>
+            {# дисциплина #}
+            <td class="tg-center">
+                <p>{{ discipline.name }}</p>
+            </td>
+            {# аудитории #}
+            {% for key , auditorium in auditoriums[discipline.name] %}
+                {% if auditorium %}
+                    {% if key == 0 %}
+
+                        <td class="text-justify">
+                            <p> {{ auditorium['auditorium'].type }} {{ auditorium['auditorium'].Number }}, {{ auditorium['description'] }}
+                                посадочных
+                                мест: {{ auditorium['auditorium'].CountSeats }} .</p>
+                        </td>
+                        {{ include('component/tableOtherColumns.html.twig') }}
+                    {% else %}
+                        <tr>
+                            <td></td>
+                            <td></td>
+                            <td class=" text-justify">
+                                <p class=""> {{ auditorium['auditorium'].type }} {{ auditorium['auditorium'].Number }}, посадочных
+                                    мест {{ auditorium['auditorium'].CountSeats }}.</p>
+
+                                {% for category, values in equipments[auditorium['auditorium'].Number] %}
+                                    <p>{{ category }}:</p>
+                                    {% for equipment in values %}
+                                        {# если есть атрибуты #}
+                                        <p>{{ equipment.name }}
+                                            {% if equipment.attributes|length > 0 %}
+                                               ,
+                                                {% for attribute in equipment.attributes %}
+                                                    {{ attribute.Name }} - {{ attribute.Value }}
+                                                    {% if attribute.UnitMeasurements %}
+                                                        {{ attribute.UnitMeasurements }}
+                                                    {% endif %}
+                                                {% endfor %}
+                                            {% endif %}
+                                        </p>
+                                    {% endfor %}
+
+                                {% endfor %}
+
+                            </td>
+
+
+                            {{ include('component/tableOtherColumns.html.twig') }}
+                        </tr>
+                    {% endif %}
+                {% else %}
+                    <td></td>
+                    <td></td>
+                    <td></td>
+                    <td></td>
+                    <td></td>
+                {% endif %}
+
+            {% endfor %}
+        {% endfor %}
+    </table>
+    <style>
+        @page {
+            font-size: 16px;
+        }
+
+        p {
+            line-height: 1;
+        }
+
+        table {
+            width: 100%;
+        }
+
+        .tg {
+            border-collapse: collapse;
+            border-spacing: 0;
+            margin: 0px auto;
+        }
+
+        .tg td {
+            border-color: black;
+            border-style: solid;
+            border-width: 1px;
+            overflow: hidden;
+            padding: 5px 5px;
+            word-break: normal;
+        }
+        .text-justify {
+            text-align: justify; /* Выравнивание по ширине */
+        }
+
+        .tg th {
+            border-color: black;
+            border-style: solid;
+            border-width: 1px;
+            overflow: hidden;
+            padding: 5px 5px;
+            word-break: normal;
+        }
+
+        .tg .tg-center {
+            border-color: inherit;
+            text-align: center;
+            vertical-align: center;
+        }
+    </style>
+{% endblock %}
