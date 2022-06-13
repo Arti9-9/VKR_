@@ -1,0 +1,77 @@
+{% extends 'base.html.twig' %}
+
+{% block title %}Шаблон{% endblock %}
+
+{% block body %}
+    {{ include('component/navbar.html.twig') }}
+    <h1>Просмотр шаблона</h1>
+
+    <a href="{{ path('app_pattern_new') }}">Добавить строку в шаблон</a>
+    <table class="table table-bordered border-dark">
+        <thead>
+            <tr>
+                <th>Адрес (местоположе-ние) здания, строения, сооружения, помещения, территории</th>
+                <th>Назначение зданий, строений, сооружений, помещений и территорий с указанием площади
+                    (кв. м)</th>
+                <th>Общая площадь помещений</th>
+                <th>Собственность
+                    или
+                    оперативное
+                    управление,
+                    хозяйственное
+                    ведение,
+                    аренда
+                    (субаренда),
+                    безвозмездное
+                    пользование</th>
+                <th>Полное
+                    наименование собственника (арендодателя, ссудодателя)
+                    объекта
+                    недвижимого
+                    имущества</th>
+                <th>Документ –
+                    основание
+                    возникновения
+                    права
+                    (указываются
+                    реквизиты
+                    и сроки
+                    действия)</th>
+                <th>Кадастровый
+                    номер объекта недвижимости</th>
+                <th>Дата и номер записи
+                    регистрации
+                    в Едином
+                    государственном
+                    реестре
+                    недвижимости</th>
+                <th>Реквизиты санитарно-эпидемиологического заключения о соответствии санитарным правилам зданий, строений, сооружений, помещений, оборудования и иного имущества, необходимых для осуществления образовательной деятельности</th>
+
+            </tr>
+        </thead>
+        <tbody>
+        {% for pattern in patterns %}
+            <tr>
+                <td>{{ pattern.address }}</td>
+                <td>{{ pattern.buildings }}</td>
+                <td>{{ pattern.buildingArea }}</td>
+                <td>{{ pattern.property }}</td>
+                <td>{{ pattern.owner }}</td>
+                <td>{{ pattern.document }}</td>
+                <td>{{ pattern.cadastralNumber }}</td>
+                <td>{{ pattern.dateNumber }}</td>
+                <td>{{ pattern.requisites }}</td>
+                <td>
+                    <a href="{{ path('app_pattern_edit', {'id': pattern.id}) }}">Изменить</a>
+                    {{ include('pattern/_delete_form.html.twig') }}
+                </td>
+            </tr>
+        {% else %}
+            <tr>
+                <td colspan="11">шаблонов нет</td>
+            </tr>
+        {% endfor %}
+        </tbody>
+    </table>
+
+{% endblock %}

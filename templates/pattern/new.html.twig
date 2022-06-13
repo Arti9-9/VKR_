@@ -1,0 +1,14 @@
+{% extends 'base.html.twig' %}
+
+{% block title %}новый шаблон{% endblock %}
+
+{% block body %}
+    {{ include('component/navbar.html.twig') }}
+    <div class="container-fluid w-75">
+    <h1>Добавление новой строки в шаблон</h1>
+
+    {{ include('pattern/_form.html.twig') }}
+
+    <a href="{{ path('app_pattern_index') }}">Назад</a>
+    </div>
+{% endblock %}

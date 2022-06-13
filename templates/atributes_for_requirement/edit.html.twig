@@ -1,0 +1,14 @@
+{% extends 'base.html.twig' %}
+
+{% block title %}Edit AtributesForRequirement{% endblock %}
+
+{% block body %}
+    {{ include('component/navbar.html.twig') }}
+    <h1>Edit AtributesForRequirement</h1>
+
+    {{ include('atributes_for_requirement/_form.html.twig', {'button_label': 'Update'}) }}
+
+    <a href="{{ path('app_requirements_show', {'id' : requirement.id}) }}">back to list</a>
+
+    {{ include('atributes_for_requirement/_delete_form.html.twig') }}
+{% endblock %}
